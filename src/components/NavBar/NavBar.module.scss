@@ -1,0 +1,35 @@
+@use '../../public/styles/index.scss' as * ;
+
+
+.NavBar {
+    a{
+        text-decoration: none;
+        color: $general-tex-color;
+    }
+    .logo{
+        font-weight: $logo-font-weight;
+        font-family: $logo-font-family;
+    }
+    .activeComponent{
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    .desktopNavigation{
+        background-color: $banner-color;
+        height: 45px;
+        margin-top: 16px;
+        margin-bottom: 16px;
+        a{
+            color: $desktop-nav-color;
+        font-family: $desktop-nav-font;
+        font-weight: 400;
+        }
+    }
+    .icons{
+        color: $icons-color;
+    }
+
+    .searchToggle{
+        border: 2px solid $border-color;
+    }
+}
