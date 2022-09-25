@@ -33,7 +33,18 @@ const FeaturedProducts: FC<FeaturedProductsProps> = () => {
     autoplay: false,
     nav: true,
     dots: false,
+    // navElement:"div",
+    // navText:[
+    //   '<div style="width:32px;height:32px;border-radius:16px;"><i class="fa fa-angle-left"></i></div>',
+    //   '<div style="width:32px;height:32px;border-radius:16px;"><i class="fa fa-angle-right"></i></div>'
+    // ]
   };
+  const option2 = {
+    loop: true,
+    nav: false,
+    items: 2,
+    dots: false,
+  }
 
   return(
   <div className={styles.FeaturedProducts}>
@@ -57,7 +68,7 @@ const FeaturedProducts: FC<FeaturedProductsProps> = () => {
     </Box>
 
     {/* Mobile view */}
-    <Box sx={{ flexGrow: 1, mt: 2, display: { xs: 'block', sm: 'none' }}}>
+    <Box sx={{ flexGrow: 1, m: 2, display: { xs: 'block', sm: 'none' }}}>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 8, sm: 8, md: 12 }}>
         <OwlCarousel className="owl-theme" {...options}>
           {data.map((el:any) => 
@@ -81,6 +92,31 @@ const FeaturedProducts: FC<FeaturedProductsProps> = () => {
           )}
         </OwlCarousel>
       </Grid>
+      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 8, sm: 8, md: 12 }}>
+        <OwlCarousel className="owl-theme" {...option2}>
+          {data.map((el:any) => 
+            <div className="item" key={el}>
+              {/* <img src={el} alt="img"/> */}
+              <Grid item xs={8} sm={4} md={3}>
+                <ImageListItem  sx={{mt: 4}}>
+                  <img
+                    src={el.imgUrl}
+                    alt='hello'
+                    loading="lazy"
+                  />
+                  <ImageListItemBar
+                    title={el.name}
+                    subtitle={<Typography>{el.price}</Typography>}
+                    position="below"
+                    sx={{textAlign: 'center'}}
+                  />
+                </ImageListItem>
+            </Grid>
+            </div>
+          )}
+        </OwlCarousel>
+      </Grid>
+      
     </Box>
   </div>
 )}

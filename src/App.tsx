@@ -6,9 +6,9 @@ import Service from './pages/Service/Service';
 import Product from './pages/Product/Product';
 import BookOnline from './pages/BookOnline/BookOnline';
 import Contact from './pages/Contact/Contact';
-import './App.scss';
 import Header from './components/Header/Header';
 import Container from '@mui/material/Container';
+import './App.scss';
 
 function App() {
   return (
