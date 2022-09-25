@@ -18,8 +18,8 @@
       "withStyle": true,
       "withTest": true
     },
-    "homePage": {
-      "path": "src/pages/HomePage",
+    "home": {
+      "path": "src/pages/Home",
       "withLazy": false,
       "withStory": false,
       "withStyle": true,
