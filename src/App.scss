@@ -1,5 +1,8 @@
+@use './public/styles/index.scss' as *;
+
 .App {
   text-align: center;
+  font-family: $desktop-nav-font;
 }
 
 .App-logo {
@@ -35,4 +38,33 @@
   to {
     transform: rotate(360deg);
   }
+}
+.owl-nav{
+  font-size: 75px;
+  color: #33333399;
+}
+
+.owl-prev {
+  position: absolute;
+  top: 40%;
+  left: -10px;
+  display: block !important;
+  border:0px solid black;
+}
+.owl-next {
+  position: absolute;
+  top: 40%;
+  right: -15px;
+  display: block !important;
+  border:0px solid black;
+}
+
+
+.owl-theme .owl-nav [class*='owl-']:hover {
+  background: none;
+  color: #33333399;
+  text-decoration: none;
+}
+.MuiImageListItemBar-title{
+  white-space: normal !important;
 }

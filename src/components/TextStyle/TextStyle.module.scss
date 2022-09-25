@@ -1,0 +1,29 @@
+@use '../../public/styles/index.scss' as *;
+
+.TextStyle {
+    font-family: $desktop-nav-font;
+font-style: normal;
+font-weight: 400;
+font-size: 22px;
+line-height: 28px;
+
+color: $general-text-color;
+    div:before,
+    div:after {
+        background-color: $border-color;
+        content: "";
+        display: inline-block;
+        height: 1px;
+        position: relative;
+        vertical-align: middle;
+        width: 50%;
+    }
+    div:before {
+        right: 0.5em;
+        margin-left: -50%;
+    }
+    div:after {
+        left: 0.5em;
+        margin-right: -50%;
+    }
+}
