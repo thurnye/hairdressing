@@ -67,7 +67,7 @@ const FeaturedProducts: FC<FeaturedProductsProps> = () => {
       </Grid>
     </Box>
 
-    {/* Mobile view */}
+    {/* Mobile view with carousel*/}
     <Box sx={{ flexGrow: 1, m: 2, display: { xs: 'block', sm: 'none' }}}>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 8, sm: 8, md: 12 }}>
         <OwlCarousel className="owl-theme" {...options}>
