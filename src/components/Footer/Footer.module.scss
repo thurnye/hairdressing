@@ -1,0 +1,16 @@
+@use '../../public/styles/index.scss' as * ;
+
+.Footer {
+    border-top: 1px solid $border-color;
+}
+.footerNameContainer{
+    border-top: 1px solid $border-color;
+    justify-content: center;
+    align-items: center;
+    background-color: $footer-logo-bg-color;
+}
+.footerName{
+    font-weight: 900;
+    font-size: 24px !important;
+    font-family: $logo-font-family !important;
+}

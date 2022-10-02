@@ -5,7 +5,7 @@
   "testLibrary": "Hair-Dressing",
   "component": {
     "default": {
-      "path": "src/components/layout",
+      "path": "src/components/Footer",
       "withStyle": true,
       "withTest": true,
       "withStory": false,
