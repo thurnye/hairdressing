@@ -1,0 +1,21 @@
+.Header {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+}
+.Header .headerTop {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 82px;
+  top: 30px;
+}
+.Header .searchAccountCart, .Header .accountCart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.Header .sampleSearInput {
+  width: 250px;
+}/*# sourceMappingURL=Header.module.css.map */

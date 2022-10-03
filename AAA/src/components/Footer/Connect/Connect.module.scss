@@ -1,0 +1,14 @@
+@use '../../../public/styles/index.scss' as *;
+
+.Connect {
+    .newsLetter, .newsLetter:hover{
+        color: $buttonText-color;
+        background-color: $buttonBackground;
+        width: 180px;
+    }
+    .errorMessage{
+        text-align: start;
+        margin-left: 5px;
+        color: $error-color;
+    }
+}

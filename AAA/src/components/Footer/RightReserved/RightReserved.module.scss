@@ -1,0 +1,13 @@
+.RightReserved {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .iconContainer{
+        display: flex;
+        align-items: center;
+    }
+    .paymentIcons{
+        margin-left: 5px;
+        font-size: 30px;
+    }
+}

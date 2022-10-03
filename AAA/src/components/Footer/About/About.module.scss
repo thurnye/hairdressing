@@ -1,0 +1,7 @@
+@use '.././../../public/styles/index.scss' as *;
+.About {
+    a{
+        text-decoration: none;
+        color: $general-text-color;
+    }
+}
