@@ -36,7 +36,7 @@ const Product: FC<ProductProps> = () => {
             Live From Space
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" component="div">
-            Mac Miller
+            Mac Millers
           </Typography>
         </CardContent>
       </Box>

@@ -1,24 +1,49 @@
-const Controller = require('../Controller/controller');
+// const Controller = require('../Controller/controller');
+const ProdController = require('../Controller/ProdController');
+const Data = require('../config/data')
 const router = require('express').Router()
 
-//get all users
-router.get('/', Controller.getHompage)
+// ========Users==============
  
-//post new user
-router.post('/api', Controller.postCreateUser);
+// //Sign UP
+// router.post('/api/user', Controller.postCreateUser);
 
-//getting a user item by id
-router.get('/api/:id', Controller.getAUserByID);
+// //Login
+// router.post(`/api/user/login`, Controller.getLogin);
 
-//get user to edit
-router.get('/edit/:id', Controller.getEdit);
+// // Update
+// router.post('/api/user/edit/:id', Controller.postEdit);
 
-//post the edited user
-router.post('/edit/:id', Controller.postEdit);
+// //Delete
+// router.post('/api/user/delete/:id', Controller.postDelete);
 
-//post delete
-router.post('/api/:id', Controller.postDelete);
 
+// =============PRODUCTS==============
+
+//Get Shop Page
+router.get('/api/data', Data.getData);
+
+//Get Products by Page
+router.get('/api/products/:page', ProdController.getProducts);
+
+// // Get Filter
+router.post('/api/filter/:page', ProdController.postFilter)
+
+// // Single Product
+ router.get('/api/product/:id', ProdController.getOneProduct)
+
+
+
+//  ======== CART ===========
+
+// // //Get Cart
+// router.get('/api/cart', ProdController.getCart)
+
+// // // Add to Cart
+// router.post('/api/cart/:id', ProdController.postAddToCart)
+
+// // //remove from cart
+// router.post('/api/cart/remove/:id', ProdController.removeCartItem)
 
 
 

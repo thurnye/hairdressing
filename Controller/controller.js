@@ -1,10 +1,5 @@
 //this is the server controller where i do send data to the back end....
-const User = require('../Model/user')
-
-
-
-
-
+const User = require('../Model/userModel')
 
 //Creating A User
 const postCreateUser = async (req, res, next) => {
