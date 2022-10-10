@@ -5,8 +5,6 @@ const Order= require('../model/orderModel');
 const { response } = require('express');
 
 
-// const colors = ['Red', 'Orange','Black', 'Yellow', 'Green', 'Blue', 'Purple', 'White', 'Brown', 'Pink', 'Multicolor', 'Turquoise', 'Lemon', 'Beige','Cream', 'Silver', 'Gold', 'Grey', 'Off-white']
-
 const getData = async (req, res, next) => {
 
     console.log('getting data...')
@@ -16,52 +14,41 @@ const getData = async (req, res, next) => {
 // Get Products
 const getProducts = async (req, res, next) => {
     try{
-            const products = await Products.find();
-            console.log("Products", products)
-            // const allBrands = []
-            // const allGenders = []
-            // const allColors = []
-            // for(prod in catalog){
-            //     allBrands.push(catalog[prod].brand)
-            //     allGenders.push(catalog[prod].gender)
-            //     allColors.push(catalog[prod].colorway)
-            // }
-            // // get the unique values
-            // const brands = [...new Set(allBrands)];
-            // const genders = [...new Set(allGenders)];
+            const page = parseInt(req.params.page) || 1
+            const perPage = parseInt(req.params.itemsPerPage) || 24
+            console.log(page, typeof perPage)
+            const prod = await Products.find();
+            const allBrands = []
+            for(let p in prod){
+                allBrands.push(prod[p].brandName)
+            }
+            const brands = [...new Set(allBrands)];
 
 
-            // for quering the next filter page, so as not to throw an error in shop/catalog
+            // for quering the next filter page, so as not to throw an error in product page
             // const query = {    
             //     retailPrice: {  $gte: Number(req.body.minAmount) || 0, $lte: Number(req.body.maxAmount) || 5000},
             // } 
         // pagination
-        // const page = req.params.page || 1
-        // const perPage = 20;
-        // await Products.find()
-        // .find({})
-        // .skip((perPage * page) - perPage)
-        // .limit(perPage)
-        // .exec((err, products) => {
-        //     Products.countDocuments().exec((err, count) => {
-        //         if (err) return next(err)
-        //         // console.log(products)
-        //         res.render('shop/catalog', {
-        //             title: 'Simpleton',
-        //             user: req.user,
-        //             products: products,
-        //             current: page,
-        //             pages: Math.ceil(count / perPage),
-        //             brands: brands,
-        //             genders: genders,
-        //             colors: colors,
-        //             search: false,
-        //             filter: query
-        //         })
-        //     })
-        // })
+         await Products.find()
+        .find({})
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .exec((err, products) => {
+            res.status(200).json({
+                products,
+                brands,
+                user: '',
+                dataLength: prod.length
+
+            })
+        })
 } catch (err) {
-    console.log(err)
+    res.status(500).json({
+        products: [],
+        brands:[],
+        user: '',
+    })
    }
 
 }
