@@ -24,10 +24,10 @@ const router = require('express').Router()
 router.get('/api/data', Data.getData);
 
 //Get Products by Page
-router.get('/api/products/:page', ProdController.getProducts);
+router.get('/api/products/:page/:itemsPerPage', ProdController.getProducts);
 
 // // Get Filter
-router.post('/api/filter/:page', ProdController.postFilter)
+router.post('/api/filter/:page/:itemsPerPage', ProdController.postFilter)
 
 // // Single Product
  router.get('/api/product/:id', ProdController.getOneProduct)
