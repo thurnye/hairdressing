@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Box, Container, Typography,Card , CardContent,ImageListItemBar, Grid, CardMedia } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
@@ -9,17 +9,17 @@ interface ProductProps {}
 
 const Product: FC<ProductProps> = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemPerPage = 5;
+  const itemPerPage = 12;
   const count = Math.ceil(data.length / itemPerPage)
-
-
-  const handleChangePage = (e:any, n:number) => {
-    console.log(n);
-    setCurrentPage(n);
-  };
+  const [paginatedData, setPaginatedData] = useState<[]>([])
 
   //setting the pagination
 
+  useEffect(() => { 
+    const offset:number = (currentPage - 1) * itemPerPage
+    const d:any = data.slice(offset).slice(0, itemPerPage)
+    setPaginatedData(d)
+  },[currentPage])
 
 
 
@@ -36,14 +36,14 @@ const Product: FC<ProductProps> = () => {
             Live From Space
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" component="div">
-            Mac Miller
+            Mac Millers
           </Typography>
         </CardContent>
       </Box>
       <Box>
         <Box sx={{ flexGrow: 1, mt: 2, display: { xs: '', sm: 'block' }}}>
           <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 8, md: 12 }}>
-            {data.map((el:any, index:number) => (
+            {paginatedData.map((el:any, index:number) => (
               <Grid item xs={6} sm={4} md={4} key={index}>
                 <CardMedia
                 component="img"
@@ -65,7 +65,7 @@ const Product: FC<ProductProps> = () => {
               count={count} 
               page={currentPage}
               showFirstButton showLastButton 
-              onChange={(e, n) => handleChangePage(e, n)}
+              onChange={(_, n:number) => setCurrentPage(n)}
             />
           </Stack>
         </Box>
