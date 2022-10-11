@@ -1,7 +1,6 @@
 import React, { FC , useState} from 'react';
 import styles from './NavBar.module.scss';
 import { Link } from "react-router-dom";
-
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -14,12 +13,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { ShoppingBag } from '@mui/icons-material';
-
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Grid from '@mui/material/Grid';
+import Categories from './Categories/Categories';
 
 
 
@@ -70,12 +69,12 @@ const NavBar: FC<NavBarProps> = () => {
   const [state, setState] = useState(false);
   const [openSearch, setOpenSearch] = useState<boolean>(false)
   const [active, setActive] = useState<string>('Home')
-  const navigations = [
-    {name: 'Home', path: '/'},
-    {name: 'Products', path: '/products'},
-    {name: 'Services', path: '/services'},
-    {name: 'Book Online', path: '/book-online'},
-    {name: 'Contacts', path: '/contact'},
+  const nav:any = [
+    {name: 'Home', path: '/', category: false},
+    {name: 'Products', path: '/products', category: true},
+    {name: 'Services', path: '/services', category: false},
+    {name: 'Book Online', path: '/book-online', category: false},
+    {name: 'Contacts', path: '/contact', category: false},
   ]
 
   const ListStyle = styled('div')(({ theme }) => ({
@@ -96,6 +95,15 @@ const NavBar: FC<NavBarProps> = () => {
 
       setState(val);
     };
+
+    const setActiveNav = (name:string) => {
+      setActive(name)
+      setState(false);
+    }
+
+   const closeToggleDrawer = (e:boolean) => setState(false)
+
+   
 
   
   const menuId = 'primary-search-account-menu';
@@ -126,19 +134,25 @@ const NavBar: FC<NavBarProps> = () => {
           <Box
           sx={{ width: 250, mt: 7 }}
           role="presentation"
-          onClick={toggleDrawer(false)}
-          onKeyDown={toggleDrawer(false)}
+          // onClick={toggleDrawer(false)}
+          // onKeyDown={toggleDrawer(false)}
           >
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <ListStyle>
                   <List >
-                   { navigations.map((el:any) => 
-                   <ListItem  key={el.name}>
-                        <ListItemText onClick={() => setActive(el.name)} >
+                   { nav.map((el:any, i:number) => {
+                    const {category} = el
+                    return (<React.Fragment key={`MobileView_${el.name}${i}`}>
+                    {category ? <Categories closeToggleDrawer={closeToggleDrawer}/> :
+                   <ListItem>
+                        <ListItemText onClick={() => setActiveNav(el.name)} >
                         <Link to={el.path} className={active === el.name ? styles.activeComponent : ''}>{el.name}</Link>
                           </ListItemText>
-                      </ListItem>)}
+                      </ListItem>}
+                    </React.Fragment>
+                    )
+                    })}
                   </List>
                 </ListStyle>
               </Grid>
@@ -212,18 +226,22 @@ const NavBar: FC<NavBarProps> = () => {
       </AppBar>
     </Box>
     <Box sx={{ display: { xs: 'none', sm: 'flex' }, justifyContent: 'center', alignItems: 'center'}} className={styles.desktopNavigation}>
-        {navigations.map((el:any) => 
+        {nav.map((el:any, i:number) => {
+          const {category} = el
+          return(<React.Fragment key={`DesktopView_${el.name}${i}`}>
+            {category ? <Categories closeToggleDrawer={closeToggleDrawer}/> :
             <Typography
               variant="h6"
               noWrap
-              component="a"
+              component="p"
               sx={{ fontSize: 15, fontWeight: '900', mr: 4}}
               onClick={() => setActive(el.name)}
               className={active === el.name ? styles.activeComponent : ''}
             >
               <Link to={el.path}>{el.name}</Link>
-            </Typography>
-          )}
+            </Typography>}
+          </React.Fragment>
+          )})}
     </Box>
   </div>
 )};

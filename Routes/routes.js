@@ -23,8 +23,9 @@ const router = require('express').Router()
 //Get Shop Page
 router.get('/api/data', Data.getData);
 
+router.get('/api/categories', ProdController.getCategories)
 //Get Products by Page
-router.get('/api/products/:page/:itemsPerPage', ProdController.getProducts);
+router.get('/api/products/:page/:itemsPerPage/:category', ProdController.getProducts);
 
 // // Get Filter
 router.post('/api/filter/:page/:itemsPerPage', ProdController.postFilter)

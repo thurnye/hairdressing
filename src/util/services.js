@@ -28,8 +28,8 @@ class StuffDataService {
   // ======= PRODUCTS API ========
 
   // get products by page
-  find(page, itemsPerPage) {
-    return http.get(`/api/products/${page}/${itemsPerPage}`);
+  find(page, itemsPerPage, category) {
+    return http.get(`/api/products/${page}/${itemsPerPage}/${category}`);
   }
   
   // Get Filter
@@ -40,6 +40,11 @@ class StuffDataService {
   // Single Product
   findById(id) {
     return http.get(`/api/product/${id}`);
+  }
+
+
+  getCategories() {
+    return http.get(`/api/categories`);
   }
 
 

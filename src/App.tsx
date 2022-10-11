@@ -1,5 +1,6 @@
 import React,{useEffect} from 'react';
 import {Routes, Route} from "react-router-dom";
+import {useDispatch, useSelector} from 'react-redux';
 import { loadCSS } from 'fg-loadcss';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
@@ -14,12 +15,16 @@ import Contact from './pages/Contact/Contact';
 import Header from './components/Header/Header';
 import Container from '@mui/material/Container';
 import Footer from './components/Footer/Footer';
+import { getCategories } from './api/request'; 
+import { getAllCategories, categoriesSelector } from './store/productSlice';
 import './App.scss';
 
 
 library.add(fab, far, fas)
 
 function App() {
+  const dispatch = useDispatch();
+  const categories = useSelector(categoriesSelector)
   useEffect(() => {
     const node = loadCSS(
       'https://use.fontawesome.com/releases/v6.0.0/css/all.css'
@@ -29,14 +34,27 @@ function App() {
       node.parentNode!.removeChild(node);
     };
   }, []);
+
+  //GetCategories
+  useEffect(() => { 
+    const fetchData = async () => {
+        const request = await getCategories()
+        const {status, data} = request
+        dispatch(getAllCategories({status,data}))
+  }
+  fetchData();
+  },[])
+
+
   return (
     <div className="App">
       <Header/>
       <Routes>
       <Route path="/"  element={<Home/>} />
-      <Route path="/products"  element={<Product/>} />
+      {/* <Route path="/products"  element={<Product/>} /> */}
       <Route path="/services"  element={<Service/>} />
       <Route path="/book-online"  element={<BookOnline/>} />
+      {categories.map((el:any) => <Route path={`/products/${el.displayName}`} key={`routes-${el.displayName}`} element={<Product/>} />)}
       <Route path="/contact"  element={<Contact/>} />
         <Route path="*" element={<NoMatch />} />
       </Routes>

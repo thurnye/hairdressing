@@ -1,0 +1,29 @@
+{
+    "usesTypeScript": true,
+    "usesCssModule": true,
+    "cssPreprocessor": "scss",
+    "testLibrary": "Hair-Dressing",
+    "component": {
+      "default": {
+        "path": "src/components/NavBar",
+        "withStyle": true,
+        "withTest": true,
+        "withStory": false,
+        "withLazy": false
+      },
+      "page": {
+        "path": "src/pages",
+        "withLazy": false,
+        "withStory": false,
+        "withStyle": true,
+        "withTest": true
+      },
+      "home": {
+        "path": "src/pages/Home",
+        "withLazy": false,
+        "withStory": false,
+        "withStyle": true,
+        "withTest": true
+      }
+    }
+  }
