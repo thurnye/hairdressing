@@ -1,7 +1,9 @@
-import React, { FC , useState} from 'react';
+import React, { FC , useState, useEffect} from 'react';
+import {useDispatch} from 'react-redux';
+import { useNavigate } from "react-router-dom";
 import styles from './NavBar.module.scss';
 import { Link } from "react-router-dom";
-
+import {getSearchText} from '../../store/searchSlice'
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -14,13 +16,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { ShoppingBag } from '@mui/icons-material';
-
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Grid from '@mui/material/Grid';
-
+import Categories from './Categories/Categories';
+import { TextField } from '@mui/material';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -67,15 +69,18 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 interface NavBarProps {}
 
 const NavBar: FC<NavBarProps> = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [state, setState] = useState(false);
   const [openSearch, setOpenSearch] = useState<boolean>(false)
   const [active, setActive] = useState<string>('Home')
-  const navigations = [
-    {name: 'Home', path: '/'},
-    {name: 'Products', path: '/products'},
-    {name: 'Services', path: '/services'},
-    {name: 'Book Online', path: '/book-online'},
-    {name: 'Contacts', path: '/contact'},
+  const [search, setSearch] = useState<any>('')
+  const nav:any = [
+    {name: 'Home', path: '/', category: false},
+    {name: 'Products', path: '/products', category: true},
+    {name: 'Services', path: '/services', category: false},
+    {name: 'Book Online', path: '/book-online', category: false},
+    {name: 'Contacts', path: '/contact', category: false},
   ]
 
   const ListStyle = styled('div')(({ theme }) => ({
@@ -93,9 +98,28 @@ const NavBar: FC<NavBarProps> = () => {
       ) {
         return;
       }
-
       setState(val);
     };
+
+    const setActiveNav = (name:string) => {
+      setActive(name)
+      setState(false);
+    }
+
+   const closeToggleDrawer = (e:boolean) => {
+    setState(false)
+    setActive('Products')
+  }
+
+  const searchField = () => {
+    if(search.trim()){
+      console.log('Nav',search)
+      dispatch(getSearchText(search))
+      navigate(`/products/search/q=${search}`);
+    }
+  }
+
+   
 
   
   const menuId = 'primary-search-account-menu';
@@ -126,19 +150,25 @@ const NavBar: FC<NavBarProps> = () => {
           <Box
           sx={{ width: 250, mt: 7 }}
           role="presentation"
-          onClick={toggleDrawer(false)}
-          onKeyDown={toggleDrawer(false)}
+          // onClick={toggleDrawer(false)}
+          // onKeyDown={toggleDrawer(false)}
           >
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <ListStyle>
                   <List >
-                   { navigations.map((el:any) => 
-                   <ListItem  key={el.name}>
-                        <ListItemText onClick={() => setActive(el.name)} >
+                   { nav.map((el:any, i:number) => {
+                    const {category} = el
+                    return (<React.Fragment key={`MobileView_${el.name}${i}`}>
+                    {category ? <Categories closeToggleDrawer={closeToggleDrawer} active={active} component={el.name}/> :
+                   <ListItem>
+                        <ListItemText onClick={() => setActiveNav(el.name)} >
                         <Link to={el.path} className={active === el.name ? styles.activeComponent : ''}>{el.name}</Link>
                           </ListItemText>
-                      </ListItem>)}
+                      </ListItem>}
+                    </React.Fragment>
+                    )
+                    })}
                   </List>
                 </ListStyle>
               </Grid>
@@ -165,15 +195,36 @@ const NavBar: FC<NavBarProps> = () => {
           </Box>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: 'flex'}}>
-            <Search sx={{ display: { xs: 'none', sm: 'block' } }} className={styles.searchToggle}>
-            <SearchIconWrapper>
-              <SearchIcon className={styles.icons}/>
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
+          <Box
+                component="form"
+                sx={{ p: '2px 4px', 
+                alignItems: 'center', 
+                width: 400,
+                border: '2px dotted red',
+                display: { xs: 'none', sm: 'flex' }
+              }}
+              className={styles.searchToggle}
+              >
+                <InputBase
+                  sx={{ ml: 1, flex: 1 }}
+                  placeholder="search..."
+                  inputProps={{ 'aria-label': 'Search Products' }}
+                  onChange = {(e) => setSearch(e.target.value)}
+                />
+                <IconButton 
+                disableRipple
+                type="button" 
+                onClick = {() => searchField()}
+                sx={{ p: '10px', 
+                color: 'black', 
+                height: '100%',
+                borderLeft: '2px solid #ccca',
+                borderRadius: 0,
+                width: '60px'
+                }} aria-label="search">
+                  <SearchIcon />
+                </IconButton>
+            </Box>
           <Box sx={{ display: 'flex'}}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
@@ -198,8 +249,13 @@ const NavBar: FC<NavBarProps> = () => {
           </Box>
           </Box>
         </Toolbar>
+
         <Box>
-          <Search sx={{ display: { xs: openSearch ? 'flex' : 'none', sm: 'none' }}} className={styles.searchToggle}>
+          {/* <Search 
+          sx={{ display: { xs: openSearch ? 'flex' : 'none', sm: 'none' }}} 
+          className={styles.searchToggle}
+          onChange= {(e:any) => setSearch(e.target.value)}
+          >
             <SearchIconWrapper>
               <SearchIcon className={styles.icons}/>
             </SearchIconWrapper>
@@ -207,23 +263,60 @@ const NavBar: FC<NavBarProps> = () => {
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
             />
-          </Search>
+          </Search> */}
           </Box>
+
+          <Box
+                component="form"
+                sx={{ p: '2px 4px', 
+                alignItems: 'center', 
+                // width: ,
+                border: '2px dotted red',
+                display: { xs: openSearch ? 'flex' : 'none', sm: 'none' }
+                
+              }}
+
+          className={styles.searchToggle}
+              >
+                <InputBase
+                  sx={{ ml: 1, flex: 1 }}
+                  placeholder="search..."
+                  inputProps={{ 'aria-label': 'Search Products' }}
+                  onChange = {(e) => setSearch(e.target.value)}
+                />
+                <IconButton 
+                disableRipple
+                type="button" 
+                onClick = {() => searchField()}
+                sx={{ p: '10px', 
+                color: 'black', 
+                height: '100%',
+                borderLeft: '2px solid #ccca',
+                borderRadius: 0,
+                width: '60px'
+                }} aria-label="search">
+                  <SearchIcon />
+                </IconButton>
+              </Box>
       </AppBar>
     </Box>
     <Box sx={{ display: { xs: 'none', sm: 'flex' }, justifyContent: 'center', alignItems: 'center'}} className={styles.desktopNavigation}>
-        {navigations.map((el:any) => 
+        {nav.map((el:any, i:number) => {
+          const {category} = el
+          return(<React.Fragment key={`DesktopView_${el.name}${i}`}>
+            {category ? <Categories closeToggleDrawer={closeToggleDrawer} active={active} component={el.name}/> :
             <Typography
               variant="h6"
               noWrap
-              component="a"
+              component="p"
               sx={{ fontSize: 15, fontWeight: '900', mr: 4}}
               onClick={() => setActive(el.name)}
               className={active === el.name ? styles.activeComponent : ''}
             >
               <Link to={el.path}>{el.name}</Link>
-            </Typography>
-          )}
+            </Typography>}
+          </React.Fragment>
+          )})}
     </Box>
   </div>
 )};

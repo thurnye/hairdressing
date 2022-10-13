@@ -1,14 +1,25 @@
 //the shop has to have the product model 
 const User = require('../model/userModel')
 const Products = require('../model/prodModel')
+const Category = require('../Model/categoriesModel')
 const Order= require('../model/orderModel');
 const { response } = require('express');
 
 
-const getData = async (req, res, next) => {
 
-    console.log('getting data...')
 
+const getCategories = async (req, res, next) => {
+    try {
+        const categories = await Category.find();
+        res.status(200).json({
+            categories,
+        })
+    } catch (error) {
+        res.status(500).json({
+            category:[],
+            user: '',
+        })
+    }
 }
 
 // Get Products
@@ -16,11 +27,25 @@ const getProducts = async (req, res, next) => {
     try{
             const page = parseInt(req.params.page) || 1
             const perPage = parseInt(req.params.itemsPerPage) || 24
-            console.log(page, typeof perPage)
-            const prod = await Products.find();
+            const category = req.params.category.toLowerCase()
+            // const cat = category.split('&')
+            console.log(page, perPage, category)
+            const prod = await Products.find({
+                category: {
+                    $regex: `${category}`,
+                    // $regex: 'Styling'
+                },
+            });
+            console.log("Length",prod.length/perPage)
+            const categories = await Category.find();
             const allBrands = []
             for(let p in prod){
+                // const cat = prod[p].category.toLowerCase()
+                // prod[p].category = 'hair & styling'
+                // prod[p].save()
+                // console.log('saved')
                 allBrands.push(prod[p].brandName)
+                
             }
             const brands = [...new Set(allBrands)];
 
@@ -30,16 +55,24 @@ const getProducts = async (req, res, next) => {
             //     retailPrice: {  $gte: Number(req.body.minAmount) || 0, $lte: Number(req.body.maxAmount) || 5000},
             // } 
         // pagination
-         await Products.find()
-        .find({})
+         await Products
+        .find({
+            category: {
+                $regex: `${category}`,
+                // $regex: cat[1]
+            },
+
+        })
         .skip((perPage * page) - perPage)
         .limit(perPage)
         .exec((err, products) => {
+            // console.log(products)
             res.status(200).json({
-                products,
                 brands,
+                categories,
+                dataLength: prod.length/perPage + 1,
+                products,
                 user: '',
-                dataLength: prod.length
 
             })
         })
@@ -309,7 +342,7 @@ const postFilter = async (req, res) => {
 
 
 module.exports = {
-    getData,
+    getCategories,
     getProducts,
     getOneProduct,
     postAddToCart,

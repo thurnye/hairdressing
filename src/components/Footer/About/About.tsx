@@ -10,7 +10,6 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import styles from './About.module.scss';
-import e from 'express';
 
 
 interface AboutProps {}
@@ -39,7 +38,7 @@ const About: FC<AboutProps> = () => {
       <Box sx={{ flexGrow: 1, textAlign: 'start', display: { xs: 'none', sm: 'none',  md: 'block' } }}>
             <List dense={true} sx={{pt:0}}>
               {desktop.map((el:any) => 
-              <ListItem  key={el.name} sx={{p:0}}>
+              <ListItem  key={`_${el.name}`} sx={{p:0}}>
                 <ListItemText>
                 <Link to={el.path}>{el.name}</Link>
                   </ListItemText>
@@ -49,8 +48,8 @@ const About: FC<AboutProps> = () => {
 
     {/* Mobile  */}
     <Box sx={{ flexGrow: 1, textAlign: 'start', display: { xs: 'block', sm: 'block',  md: 'none' },     width: 'calc(100vw - 35px) '}}>
-      {mobile.map((el:any) => 
-        <Accordion sx={{boxShadow: 'none'}}> 
+      {mobile.map((el:any, i:number) => 
+        <Accordion sx={{boxShadow: 'none'}} key={`MobileAccordion_${el.name}${i}`}> 
           <AccordionSummary
            sx={{backgroundColor: 'none', p:0}}
             expandIcon={<ExpandMoreIcon />}
@@ -64,8 +63,8 @@ const About: FC<AboutProps> = () => {
               // width:'calc(10vw - 64px)'
             }}>
               <List dense={true} sx={{pt:0}}>
-              {el.others.map((el:any) => 
-              <ListItem  key={el.name} sx={{p:0}}>
+              {el.others.map((el:any, i:number) => 
+              <ListItem  sx={{p:0}} key={`MobileAccordion_Others${el.name}${i}`}>
                 <ListItemText>
                 <Link to={el.path}>{el.name}</Link>
                   </ListItemText>

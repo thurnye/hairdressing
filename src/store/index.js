@@ -1,6 +1,8 @@
 import  { configureStore} from '@reduxjs/toolkit'
 import User from './userSlice'
 import Products from './productSlice'
+import Search from './searchSlice'
+import Categories from './categorySlice'
 
 
 
@@ -8,7 +10,9 @@ import Products from './productSlice'
 const store = configureStore({
     reducer: {
         User,
-        Products
+        Products,
+        Categories,
+        Search
     }
 })
 

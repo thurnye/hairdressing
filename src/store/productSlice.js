@@ -1,5 +1,4 @@
 import  {createSlice} from '@reduxjs/toolkit'
-import { getProducts } from '../api/request'
 import {SUCCESS_STATUS, NO_CONTENTS} from '../common/variables'
 // import store from './index'
 
@@ -7,7 +6,6 @@ const ProductData = {
     products: [],
     brand: [],
     loadingProducts: true,
-    loadingProduct: true,
     singleProduct: [],
 }
 
@@ -30,21 +28,23 @@ const products = createSlice({
                     state.products = [];
                 }
        },
-
-       getSingleProduct(state, action){
+        getSingleProduct(state, action){
            const product = action.payload.data
            state.singleProduct = product
-       }
+       },
+
     }
 })
 
 
 // actions
 export default products.reducer;
-export const {getAllProducts, getSingleProduct} = products.actions
+export const {
+    getAllProducts, 
+    getSingleProduct,
+} = products.actions
 
 
 //selectors
 export const productsSelector = (state) => state.Products.products;
-
 export const productsLoadingSelector = (state) => state.Products.loadingProduct;

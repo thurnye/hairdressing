@@ -8,6 +8,7 @@ import styles from './Product.module.scss';
 import {data as dt} from '../../Data/product'
 import {getProducts} from '../../api/request'
 import {getAllProducts, productsSelector, productsLoadingSelector} from '../../store/productSlice'
+import {categorySelector} from '../../store/categorySlice'
 
 
 interface ProductProps {}
@@ -16,31 +17,27 @@ const Product: FC<ProductProps> = () => {
   const numberOfItems:any = localStorage.getItem("ItemNumber")
   const dispatch = useDispatch()
   const products = useSelector(productsSelector)
+  const category = useSelector(categorySelector)
   const isLoading = useSelector(productsLoadingSelector)
   const [currentPage, setCurrentPage] = useState(1);
   const itemPerPage = 24;
-  const [count, setCount] = useState(parseInt(numberOfItems) || 50)
-  const [data, setData] = useState(dt)
-  const [paginatedData, setPaginatedData] = useState<[]>([])
+  const count = parseInt(numberOfItems) || 50
 
   //setting the pagination
+  useEffect(() => {
+    setCurrentPage(1)
+  },[category])
+
+
   useEffect(() => { 
-    const offset:number = (currentPage - 1) * itemPerPage
-    const d:any = data.slice(offset).slice(0, itemPerPage)
-    setPaginatedData(d)
     const fetchData = async () => {
-        const request = await getProducts(currentPage, itemPerPage)
+      // console.log(currentPage, itemPerPage, category)
+        const request = await getProducts(currentPage, itemPerPage, category)
         const {status, data} = request
         dispatch(getAllProducts({status,data}))
   }
   fetchData();
-  },[currentPage])
-
-  useEffect(() => {
-
-  }, [products])
-
-
+  },[currentPage, category])
 
 
   return(
@@ -70,7 +67,7 @@ const Product: FC<ProductProps> = () => {
                 <Skeleton variant="rectangular" width={'60%'} height={18} sx={{mt: 1}}/>
               </Grid>)
             :
-            products.map((el:any, index:number) => {
+            products ? products.map((el:any, index:number) => {
               const price = el.currentSku.listPrice || el.currentSku.salePrice || el.currentSku.valuePrice
               return(
               <Grid item xs={6} sm={4} md={4} key={index}>
@@ -85,7 +82,9 @@ const Product: FC<ProductProps> = () => {
                   position="below"
                 />
               </Grid>
-            )})}
+            )})
+            : <Box>something went wrong</Box>
+            }
           </Grid>
         </Box>
         <Box sx={{mt: 5}}>
