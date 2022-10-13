@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Link } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux';
 import { styled, alpha } from '@mui/material/styles';
-import { categoriesSelector, getSelectedcategory } from '../../../store/productSlice';
+import { categoriesSelector, getSelectedCategory } from '../../../store/categorySlice';
 import Typography from '@mui/material/Typography'
 import Menu, { MenuProps } from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,7 +12,6 @@ import { Box } from '@mui/material';
 import List from '@mui/material/List';
 
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -22,6 +21,8 @@ import styles from './Categories.module.scss';
 
 interface CategoriesProps {
   closeToggleDrawer: Function
+  active: string
+  component: string
 }
 
 
@@ -67,9 +68,8 @@ const StyledMenu = styled((props: MenuProps) => (
 }));
 
 const Categories: FC<CategoriesProps> = (props) => {
-  const {closeToggleDrawer} = props
+  const {closeToggleDrawer, component, active} = props
   const dispatch = useDispatch()
-  const [openCategory, setOpenCategory] = React.useState(true);
   const categories = useSelector(categoriesSelector)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -82,7 +82,7 @@ const Categories: FC<CategoriesProps> = (props) => {
   const getProductCategory = (category:string) => {
     handleClose();
     closeToggleDrawer(false)
-    dispatch(getSelectedcategory(category))
+    dispatch(getSelectedCategory(category))
   }
 
   return(
@@ -96,7 +96,7 @@ const Categories: FC<CategoriesProps> = (props) => {
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-            <Typography sx={{ml:2}}>Products</Typography>
+            <Typography sx={{ml:2}} >{component}</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Box>
@@ -129,11 +129,17 @@ const Categories: FC<CategoriesProps> = (props) => {
           sx={{
             display:"flex",
             alignItems: "center",
-            fontSize: 15, mr: 2
+            fontSize: 15, 
+            mr: 2,
+            color: 'white',
+            textDecoration: active === component ? 'underline' : '',
+            textUnderlineOffset: active === component ? '3px' : '',
           }}
+          onClick = { (e:any) => handleClick(e)}
           onMouseMove={handleClick}
+          className={active === component ? styles.activeComponent : ''}
         >
-        Products<KeyboardArrowDownIcon />
+        {component}<KeyboardArrowDownIcon />
       </Typography>
       <StyledMenu
           id="demo-customized-menu"

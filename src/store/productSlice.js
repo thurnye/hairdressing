@@ -1,15 +1,11 @@
 import  {createSlice} from '@reduxjs/toolkit'
-import { getProducts } from '../api/request'
 import {SUCCESS_STATUS, NO_CONTENTS} from '../common/variables'
 // import store from './index'
 
 const ProductData = {
     products: [],
     brand: [],
-    categories:[],
-    selectedCategory: '',
     loadingProducts: true,
-    loadingProduct: true,
     singleProduct: [],
 }
 
@@ -20,7 +16,7 @@ const products = createSlice({
         // all all recipes from the database
         getAllProducts(state, action){
                 if( action.payload.status === SUCCESS_STATUS){
-                    const {brands, categories, products, dataLength} = action.payload.data
+                    const {brands, products, dataLength} = action.payload.data
                     state.brand = brands;
                     state.loadingProduct = false;
                     state.products = products;
@@ -32,24 +28,10 @@ const products = createSlice({
                     state.products = [];
                 }
        },
-        getAllCategories(state, action){
-                if( action.payload.status === SUCCESS_STATUS){
-                    const {categories } = action.payload.data
-                    state.categories = categories
-                }
-                if(action.payload.status !== SUCCESS_STATUS){
-                    state.categories = []
-                }
-       },
-
-       getSingleProduct(state, action){
+        getSingleProduct(state, action){
            const product = action.payload.data
            state.singleProduct = product
        },
-
-       getSelectedcategory(state, action){
-            state.selectedCategory = action.payload
-       }
 
     }
 })
@@ -59,14 +41,10 @@ const products = createSlice({
 export default products.reducer;
 export const {
     getAllProducts, 
-    getSingleProduct, 
-    getSelectedcategory,
-    getAllCategories
+    getSingleProduct,
 } = products.actions
 
 
 //selectors
 export const productsSelector = (state) => state.Products.products;
 export const productsLoadingSelector = (state) => state.Products.loadingProduct;
-export const categoriesSelector = (state) => state.Products.categories;
-export const categorySelector = (state) => state.Products.selectedCategory;

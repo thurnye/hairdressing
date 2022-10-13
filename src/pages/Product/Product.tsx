@@ -7,7 +7,8 @@ import Stack from '@mui/material/Stack';
 import styles from './Product.module.scss';
 import {data as dt} from '../../Data/product'
 import {getProducts} from '../../api/request'
-import {getAllProducts, productsSelector, productsLoadingSelector, categorySelector} from '../../store/productSlice'
+import {getAllProducts, productsSelector, productsLoadingSelector} from '../../store/productSlice'
+import {categorySelector} from '../../store/categorySlice'
 
 
 interface ProductProps {}
@@ -27,10 +28,10 @@ const Product: FC<ProductProps> = () => {
     setCurrentPage(1)
   },[category])
 
-  
+
   useEffect(() => { 
     const fetchData = async () => {
-      console.log(currentPage, itemPerPage, category)
+      // console.log(currentPage, itemPerPage, category)
         const request = await getProducts(currentPage, itemPerPage, category)
         const {status, data} = request
         dispatch(getAllProducts({status,data}))
