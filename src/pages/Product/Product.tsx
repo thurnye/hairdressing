@@ -8,6 +8,7 @@ import styles from './Product.module.scss';
 import {data as dt} from '../../Data/product'
 import {getProducts} from '../../api/request'
 import {getAllProducts, productsSelector, productsLoadingSelector} from '../../store/productSlice'
+import {searchTextSelector} from '../../store/searchSlice'
 import {categorySelector} from '../../store/categorySlice'
 
 
@@ -15,10 +16,13 @@ interface ProductProps {}
 
 const Product: FC<ProductProps> = () => {
   const numberOfItems:any = localStorage.getItem("ItemNumber")
+  const localStorageSelectedCategory:any = localStorage.getItem("selectedCategory")
   const dispatch = useDispatch()
   const products = useSelector(productsSelector)
-  const category = useSelector(categorySelector)
-  const isLoading = useSelector(productsLoadingSelector)
+  const search = useSelector(searchTextSelector)
+  const category = useSelector(categorySelector) || localStorageSelectedCategory
+  const [isLoading, setIsLoading] = useState(false)
+  const loading = useSelector(productsLoadingSelector)
   const [currentPage, setCurrentPage] = useState(1);
   const itemPerPage = 24;
   const count = parseInt(numberOfItems) || 50
@@ -27,12 +31,15 @@ const Product: FC<ProductProps> = () => {
   useEffect(() => {
     setCurrentPage(1)
   },[category])
+  useEffect(() => {
+    setIsLoading(loading)
+  }, [loading])
 
-
+// console.log('localStorageSelectedCategory', localStorageSelectedCategory)
   useEffect(() => { 
     const fetchData = async () => {
       // console.log(currentPage, itemPerPage, category)
-        const request = await getProducts(currentPage, itemPerPage, category)
+        const request = await getProducts(currentPage, itemPerPage, category )
         const {status, data} = request
         dispatch(getAllProducts({status,data}))
   }

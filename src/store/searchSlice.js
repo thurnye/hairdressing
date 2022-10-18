@@ -27,4 +27,4 @@ export const {
 
 
 //selectors
-export const searchText = (state) => state.Search.SearchText;
+export const searchTextSelector = (state) => state.Search.SearchText;

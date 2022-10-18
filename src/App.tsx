@@ -17,7 +17,7 @@ import Container from '@mui/material/Container';
 import Footer from './components/Footer/Footer';
 import { getCategories } from './api/request'; 
 import { getAllCategories, categoriesSelector } from './store/categorySlice';
-import { searchText } from './store/searchSlice';
+import { searchTextSelector } from './store/searchSlice';
 import './App.scss';
 
 
@@ -26,7 +26,7 @@ library.add(fab, far, fas)
 function App() {
   const dispatch = useDispatch();
   const categories = useSelector(categoriesSelector)
-  const searchQuery = useSelector(searchText)
+  const searchQuery = useSelector(searchTextSelector)
   useEffect(() => {
     const node = loadCSS(
       'https://use.fontawesome.com/releases/v6.0.0/css/all.css'
@@ -56,7 +56,12 @@ function App() {
       <Route path={`/products/search/q=${searchQuery}`}  element={<Product/>} />
       <Route path="/services"  element={<Service/>} />
       <Route path="/book-online"  element={<BookOnline/>} />
-      {categories && categories.map((el:any) => <Route path={`/products/${el.displayName}`} key={`routes-${el.displayName}`} element={<Product/>} />)}
+      {categories && categories.map((el:any) => {
+        const {displayName} = el
+        const path = displayName.split(' ').join('')
+        return(
+      <Route path={`/products/${path}`} key={`routes-${el.displayName}`} element={<Product/>} />
+      )})}
       <Route path="/contact"  element={<Contact/>} />
         <Route path="*" element={<NoMatch />} />
       </Routes>

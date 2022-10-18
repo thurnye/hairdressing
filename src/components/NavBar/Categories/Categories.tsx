@@ -83,6 +83,7 @@ const Categories: FC<CategoriesProps> = (props) => {
     handleClose();
     closeToggleDrawer(false)
     dispatch(getSelectedCategory(category))
+    localStorage.setItem('selectedCategory', category)
   }
 
   return(
@@ -102,11 +103,14 @@ const Categories: FC<CategoriesProps> = (props) => {
             <Box>
               <List dense={true} sx={{pt:0}}>
               {categories && categories.map((el:any, i:number) => {
+                const {displayName} = el
+                // const x = displayName.replace('&', 'and')
+                const path = displayName.split(' ').join('')
                 return(
               <ListItem  sx={{p:0}} key={`CategoriesAccordion_${el.displayName}${i}`} 
               onClick={() => getProductCategory(el.displayName)}>
                 <ListItemText>
-                <Link to={`/products/${el.displayName}`}>{el.displayName}</Link>
+                <Link to={`/products/${path}`}>{el.displayName}</Link>
                   </ListItemText>
               </ListItem>
               )})}
@@ -150,12 +154,16 @@ const Categories: FC<CategoriesProps> = (props) => {
           open={open}
           onClose={handleClose}
         >
-          { categories && categories.map((el:any, i:number) => 
+          { categories && categories.map((el:any, i:number) => {
+            const {displayName} = el
+            // const x = displayName.replace('&', 'and')
+            const path = displayName.split(' ').join('')
+            return(
           <MenuItem onClick={() => getProductCategory(el.displayName)} disableRipple key={`DesktopCategories_${el.name}${i}`}>
             
-            <Link to={`/products/${el.displayName}`}>{el.displayName}</Link>
+            <Link to={`/products/${path}`}>{el.displayName}</Link>
           </MenuItem>
-          )}
+          )})}
       </StyledMenu>
     </Box>
   </div>
