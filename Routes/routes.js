@@ -25,7 +25,7 @@ router.get('/api/data', Data.getData);
 
 router.get('/api/categories', ProdController.getCategories)
 //Get Products by Page
-router.get('/api/products/:page/:itemsPerPage/:category', ProdController.getProducts);
+router.post('/api/products/:page/:itemsPerPage/', ProdController.getProducts);
 
 // // Get Filter
 router.post('/api/filter/:page/:itemsPerPage', ProdController.postFilter)

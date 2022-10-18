@@ -28,8 +28,8 @@ class StuffDataService {
   // ======= PRODUCTS API ========
 
   // get products by page
-  find(page, itemsPerPage, category) {
-    return http.get(`/api/products/${page}/${itemsPerPage}/${category}`);
+  find(page, itemsPerPage, data) {
+    return http.post(`/api/products/${page}/${itemsPerPage}/`, data);
   }
   
   // Get Filter

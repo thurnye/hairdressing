@@ -21,7 +21,7 @@ const Product: FC<ProductProps> = () => {
   const localStorageSelectedCategory:any = localStorage.getItem("selectedCategory")
   const dispatch = useDispatch()
   const products = useSelector(productsSelector)
-  const search:any = searchText
+  const search:any = searchText?.replace(/(^\w{1})|(\s+\w{1})/g, el => el.toUpperCase());
   const category:any = categoryID?.toLocaleLowerCase()
   const [isLoading, setIsLoading] = useState(false)
   const loading = useSelector(productsLoadingSelector)
@@ -32,7 +32,7 @@ const Product: FC<ProductProps> = () => {
   //setting the pagination
   useEffect(() => {
     setCurrentPage(1)
-  },[category])
+  },[category, search])
 
   useEffect(() => {
     setIsLoading(loading)
@@ -42,12 +42,16 @@ const Product: FC<ProductProps> = () => {
   useEffect(() => { 
     const fetchData = async () => {
       // console.log(currentPage, itemPerPage, category)
-        const request = await getProducts(currentPage, itemPerPage, category )
+      const filter:any = {
+        category,
+        search
+      }
+        const request = await getProducts(currentPage, itemPerPage, filter )
         const {status, data} = request
         dispatch(getAllProducts({status,data}))
   }
   fetchData();
-  },[currentPage, category])
+  },[currentPage, category, search])
 
 
   return(
