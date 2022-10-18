@@ -49,6 +49,7 @@ const Product: FC<ProductProps> = () => {
         dispatch(getAllProducts({status,data}))
   }
   fetchData();
+  window.scrollTo({ top: 0, behavior: 'smooth' })
   },[currentPage, category, search])
 
 
