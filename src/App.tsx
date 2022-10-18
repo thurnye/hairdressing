@@ -53,15 +53,16 @@ function App() {
       <Header/>
       <Routes>
       <Route path="/"  element={<Home/>} />
-      <Route path={`/products/search/q=${searchQuery}`}  element={<Product/>} />
+      <Route path={`/products/search/:searchText`}  element={<Product/>} />
       <Route path="/services"  element={<Service/>} />
       <Route path="/book-online"  element={<BookOnline/>} />
-      {categories && categories.map((el:any) => {
+      {/* {categories && categories.map((el:any) => {
         const {displayName} = el
         const path = displayName.split(' ').join('')
-        return(
-      <Route path={`/products/${path}`} key={`routes-${el.displayName}`} element={<Product/>} />
-      )})}
+        return( */}
+      {/* <Route path={`/products/:id`} key={`routes-${el.displayName}`} element={<Product/>} /> */}
+      <Route path={`/products/:categoryID`} element={<Product/>} />
+       {/* )})} */}
       <Route path="/contact"  element={<Contact/>} />
         <Route path="*" element={<NoMatch />} />
       </Routes>

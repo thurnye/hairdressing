@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {useParams} from "react-router-dom";
 import { Box, Container, Typography,Card , CardContent,ImageListItemBar, Grid, CardMedia } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Skeleton from '@mui/material/Skeleton';
@@ -16,11 +17,12 @@ interface ProductProps {}
 
 const Product: FC<ProductProps> = () => {
   const numberOfItems:any = localStorage.getItem("ItemNumber")
+  let { searchText, categoryID } = useParams();
   const localStorageSelectedCategory:any = localStorage.getItem("selectedCategory")
   const dispatch = useDispatch()
   const products = useSelector(productsSelector)
-  const search = useSelector(searchTextSelector)
-  const category = useSelector(categorySelector) || localStorageSelectedCategory
+  const search:any = searchText
+  const category:any = categoryID?.toLocaleLowerCase()
   const [isLoading, setIsLoading] = useState(false)
   const loading = useSelector(productsLoadingSelector)
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,6 +33,7 @@ const Product: FC<ProductProps> = () => {
   useEffect(() => {
     setCurrentPage(1)
   },[category])
+
   useEffect(() => {
     setIsLoading(loading)
   }, [loading])

@@ -115,7 +115,7 @@ const NavBar: FC<NavBarProps> = () => {
     if(search.trim()){
       console.log('Nav',search)
       dispatch(getSearchText(search))
-      navigate(`/products/search/q=${search}`);
+      navigate(`/products/search/${search}`);
     }
   }
 
