@@ -10,7 +10,7 @@ import {data as dt} from '../../Data/product'
 import {getProducts} from '../../api/request'
 import {getAllProducts, productsSelector, productsLoadingSelector} from '../../store/productSlice'
 import {searchTextSelector} from '../../store/searchSlice'
-import {categorySelector} from '../../store/categorySlice'
+import {getActiveComponent} from '../../store/categorySlice'
 
 
 interface ProductProps {}
@@ -18,7 +18,6 @@ interface ProductProps {}
 const Product: FC<ProductProps> = () => {
   const numberOfItems:any = localStorage.getItem("ItemNumber")
   let { searchText, categoryID } = useParams();
-  const localStorageSelectedCategory:any = localStorage.getItem("selectedCategory")
   const dispatch = useDispatch()
   const products = useSelector(productsSelector)
   const search:any = searchText?.replace(/(^\w{1})|(\s+\w{1})/g, el => el.toUpperCase());
@@ -27,21 +26,20 @@ const Product: FC<ProductProps> = () => {
   const loading = useSelector(productsLoadingSelector)
   const [currentPage, setCurrentPage] = useState(1);
   const itemPerPage = 24;
-  const count = parseInt(numberOfItems) || 50
+  const count = parseInt(numberOfItems) || 5
 
   //setting the pagination
   useEffect(() => {
     setCurrentPage(1)
+    dispatch(getActiveComponent('Products'))
   },[category, search])
 
   useEffect(() => {
     setIsLoading(loading)
   }, [loading])
 
-// console.log('localStorageSelectedCategory', localStorageSelectedCategory)
   useEffect(() => { 
     const fetchData = async () => {
-      // console.log(currentPage, itemPerPage, category)
       const filter:any = {
         category,
         search

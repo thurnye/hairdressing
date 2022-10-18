@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Link } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux';
 import { styled, alpha } from '@mui/material/styles';
-import { categoriesSelector, getSelectedCategory } from '../../../store/categorySlice';
+import { categoriesSelector, getSelectedCategory, getActiveComponent } from '../../../store/categorySlice';
 import Typography from '@mui/material/Typography'
 import Menu, { MenuProps } from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -81,9 +81,9 @@ const Categories: FC<CategoriesProps> = (props) => {
   };
   const getProductCategory = (category:string) => {
     handleClose();
+    dispatch(getActiveComponent('Products'))
     closeToggleDrawer(false)
     dispatch(getSelectedCategory(category))
-    localStorage.setItem('selectedCategory', category)
   }
 
   return(

@@ -37,7 +37,6 @@ const getProducts = async (req, res, next) => {
                         // $regex: cat[1]
                     }},
             });
-            console.log("Length",prod.length/perPage)
             const categories = await Category.find();
             const allBrands = []
             for(let p in prod){
