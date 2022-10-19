@@ -11,6 +11,7 @@ import {getProducts} from '../../api/request'
 import {getAllProducts, productsSelector, productsLoadingSelector} from '../../store/productSlice'
 import {searchTextSelector} from '../../store/searchSlice'
 import {getActiveComponent} from '../../store/categorySlice'
+import Filter from './Filter/Filter';
 
 
 interface ProductProps {}
@@ -55,20 +56,21 @@ const Product: FC<ProductProps> = () => {
 
   return(
   <div className={styles.Product}>
-    <Container maxWidth='lg'>
+    <Container  sx={{ maxWidth: { xs: 'lg', md: '1544px' }}}>
     <Typography sx={{textAlign: 'left'}}>Products</Typography>
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'column',  md: 'row' } }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'start'}}>
         <CardContent sx={{ flex: '1 0 auto', width: {md: '350px' }}}>
-          <Typography component="div" variant="h5">
+          {/* <Typography component="div" variant="h5">
             Live From Space
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" component="div">
             Mac Millers
-          </Typography>
+          </Typography> */}
+          <Filter/>
         </CardContent>
       </Box>
-      <Box>
+      <Box sx={{ ml: { xs: '', md: '100px' }}}>
         <Box sx={{ flexGrow: 1, mt: 2, display: { xs: '', sm: 'block' }}}>
           <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 8, md: 12 }}>
           
