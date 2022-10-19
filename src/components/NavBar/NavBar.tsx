@@ -1,9 +1,10 @@
 import React, { FC , useState, useEffect} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import styles from './NavBar.module.scss';
 import { Link } from "react-router-dom";
 import {getSearchText} from '../../store/searchSlice'
+import {getActiveComponent, activeComponentSelector} from '../../store/categorySlice'
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -73,7 +74,7 @@ const NavBar: FC<NavBarProps> = () => {
   const navigate = useNavigate();
   const [state, setState] = useState(false);
   const [openSearch, setOpenSearch] = useState<boolean>(false)
-  const [active, setActive] = useState<string>('Home')
+  const active= useSelector(activeComponentSelector)
   const [search, setSearch] = useState<any>('')
   const nav:any = [
     {name: 'Home', path: '/', category: false},
@@ -102,20 +103,19 @@ const NavBar: FC<NavBarProps> = () => {
     };
 
     const setActiveNav = (name:string) => {
-      setActive(name)
+      dispatch(getActiveComponent(name))
       setState(false);
     }
 
    const closeToggleDrawer = (e:boolean) => {
     setState(false)
-    setActive('Products')
   }
 
   const searchField = () => {
     if(search.trim()){
       console.log('Nav',search)
       dispatch(getSearchText(search))
-      navigate(`/products/search/q=${search}`);
+      navigate(`/products/search/${search}`);
     }
   }
 
@@ -310,7 +310,7 @@ const NavBar: FC<NavBarProps> = () => {
               noWrap
               component="p"
               sx={{ fontSize: 15, fontWeight: '900', mr: 4}}
-              onClick={() => setActive(el.name)}
+              onClick={() => setActiveNav(el.name)}
               className={active === el.name ? styles.activeComponent : ''}
             >
               <Link to={el.path}>{el.name}</Link>

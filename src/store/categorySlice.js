@@ -6,6 +6,7 @@ const CategoriesData = {
     categories:[],
     selectedCategory: '',
     loadingCategories: true,
+    activeComponent: 'Home'
 }
 
 const categories = createSlice({
@@ -24,6 +25,9 @@ const categories = createSlice({
        },
        getSelectedCategory(state, action){
             state.selectedCategory = action.payload
+       },
+       getActiveComponent(state, action){
+            state.activeComponent = action.payload
        }
 
     }
@@ -34,7 +38,8 @@ const categories = createSlice({
 export default categories.reducer;
 export const {
     getSelectedCategory,
-    getAllCategories
+    getAllCategories,
+    getActiveComponent
 } = categories.actions
 
 
@@ -42,3 +47,4 @@ export const {
 
 export const categoriesSelector = (state) => state.Categories.categories;
 export const categorySelector = (state) => state.Categories.selectedCategory;
+export const activeComponentSelector = (state) => state.Categories.activeComponent;

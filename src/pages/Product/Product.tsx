@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {useParams} from "react-router-dom";
 import { Box, Container, Typography,Card , CardContent,ImageListItemBar, Grid, CardMedia } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Skeleton from '@mui/material/Skeleton';
@@ -8,36 +9,48 @@ import styles from './Product.module.scss';
 import {data as dt} from '../../Data/product'
 import {getProducts} from '../../api/request'
 import {getAllProducts, productsSelector, productsLoadingSelector} from '../../store/productSlice'
-import {categorySelector} from '../../store/categorySlice'
+import {searchTextSelector} from '../../store/searchSlice'
+import {getActiveComponent} from '../../store/categorySlice'
 
 
 interface ProductProps {}
 
 const Product: FC<ProductProps> = () => {
   const numberOfItems:any = localStorage.getItem("ItemNumber")
+  let { searchText, categoryID } = useParams();
   const dispatch = useDispatch()
   const products = useSelector(productsSelector)
-  const category = useSelector(categorySelector)
-  const isLoading = useSelector(productsLoadingSelector)
+  const search:any = searchText?.replace(/(^\w{1})|(\s+\w{1})/g, el => el.toUpperCase());
+  const category:any = categoryID?.toLocaleLowerCase()
+  const [isLoading, setIsLoading] = useState(false)
+  const loading = useSelector(productsLoadingSelector)
   const [currentPage, setCurrentPage] = useState(1);
   const itemPerPage = 24;
-  const count = parseInt(numberOfItems) || 50
+  const count = parseInt(numberOfItems) || 5
 
   //setting the pagination
   useEffect(() => {
     setCurrentPage(1)
-  },[category])
+    dispatch(getActiveComponent('Products'))
+  },[category, search])
 
+  useEffect(() => {
+    setIsLoading(loading)
+  }, [loading])
 
   useEffect(() => { 
     const fetchData = async () => {
-      // console.log(currentPage, itemPerPage, category)
-        const request = await getProducts(currentPage, itemPerPage, category)
+      const filter:any = {
+        category,
+        search
+      }
+        const request = await getProducts(currentPage, itemPerPage, filter )
         const {status, data} = request
         dispatch(getAllProducts({status,data}))
   }
   fetchData();
-  },[currentPage, category])
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+  },[currentPage, category, search])
 
 
   return(

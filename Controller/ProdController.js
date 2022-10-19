@@ -27,16 +27,16 @@ const getProducts = async (req, res, next) => {
     try{
             const page = parseInt(req.params.page) || 1
             const perPage = parseInt(req.params.itemsPerPage) || 24
-            const category = req.params.category.toLowerCase()
+            const {category, search} = req.body
             // const cat = category.split('&')
-            console.log(page, perPage, category)
+            console.log(page, perPage, category, search)
             const prod = await Products.find({
-                category: {
-                    $regex: `${category}`,
-                    // $regex: 'Styling'
-                },
+                ...search && {displayName: { $regex: `${search}` }},
+                ...category && {category: {
+                        $regex: `${category}`,
+                        // $regex: cat[1]
+                    }},
             });
-            console.log("Length",prod.length/perPage)
             const categories = await Category.find();
             const allBrands = []
             for(let p in prod){
@@ -57,10 +57,11 @@ const getProducts = async (req, res, next) => {
         // pagination
          await Products
         .find({
-            category: {
+           ...search && {displayName: { $regex: `${search}` }},
+           ...category && {category: {
                 $regex: `${category}`,
                 // $regex: cat[1]
-            },
+            }},
 
         })
         .skip((perPage * page) - perPage)
