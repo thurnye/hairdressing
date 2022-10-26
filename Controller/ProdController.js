@@ -45,7 +45,6 @@ const getProducts = async (req, res, next) => {
                         $regex: `${category}`,
                         // $regex: cat[1]
                     }},
-                    
             });
             
             // for quering the next filter page, so as not to throw an error in product page
