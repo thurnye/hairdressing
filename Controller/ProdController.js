@@ -69,7 +69,6 @@ const getProducts = async (req, res, next) => {
                 dataLength: prod.length/perPage + 1,
                 products,
                 user: '',
-
             })
         })
 } catch (err) {
