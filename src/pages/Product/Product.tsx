@@ -93,7 +93,7 @@ const Product: FC<ProductProps> = () => {
                 />
                 <ImageListItemBar
                   title={el.displayName}
-                  subtitle={<Typography>{price}</Typography>}
+                  subtitle={<Typography>${price.toFixed(2)}</Typography>}
                   position="below"
                 />
               </Grid>

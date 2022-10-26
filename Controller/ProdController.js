@@ -46,6 +46,14 @@ const getProducts = async (req, res, next) => {
                         // $regex: cat[1]
                     }},
             });
+
+            const minMax = await Products.aggregate([
+                { "$group": {
+                   "_id": null,
+                   "MaximumValue": { "$max": "$currentSku.listPrice" },
+                }}
+             ]);
+             console.log('MinMax', minMax[0].MaximumValue)
             
             // for quering the next filter page, so as not to throw an error in product page
             // const query = {    
@@ -69,6 +77,7 @@ const getProducts = async (req, res, next) => {
                 dataLength: prod.length/perPage + 1,
                 products,
                 user: '',
+                maximumPrice: minMax[0].MaximumValue,
             })
         })
 } catch (err) {
