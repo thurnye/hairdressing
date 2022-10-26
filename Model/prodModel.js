@@ -18,7 +18,7 @@ const productsSchema = new Schema({
       isOnlineOnly: {type: Boolean},
       isOrganic: {type: Boolean},
       isSephoraExclusive: {type: Boolean},
-      listPrice:{type: String},
+      listPrice:{type: Number},
       salePrice:{type: String},
       skuId:{type: String},
       skuImages: [Object],

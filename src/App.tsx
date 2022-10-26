@@ -16,6 +16,7 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import { getCategories } from './api/request'; 
 import { getAllCategories} from './store/categorySlice';
+import { getAllBrands} from './store/productSlice';
 import './App.scss';
 
 
@@ -37,8 +38,10 @@ function App() {
   useEffect(() => { 
     const fetchData = async () => {
       const request = await getCategories()
-      const {status, data} = request
-        dispatch(getAllCategories({status,data}))
+      const {status} = request
+      const {categories, brands} = request && request.data
+        dispatch(getAllCategories({status,categories}))
+        dispatch(getAllBrands({status,brands}))
   }
   fetchData();
   },[])

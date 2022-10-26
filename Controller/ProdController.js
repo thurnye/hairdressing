@@ -11,12 +11,21 @@ const { response } = require('express');
 const getCategories = async (req, res, next) => {
     try {
         const categories = await Category.find();
+        const prod = await Products.find();
+        const allBrands = []
+        for(let p in prod){
+            allBrands.push(prod[p].brandName)
+            
+        }
+        const brands = [...new Set(allBrands)].sort();
         res.status(200).json({
             categories,
+            brands,
         })
     } catch (error) {
         res.status(500).json({
             category:[],
+            brands:[],
             user: '',
         })
     }
@@ -36,20 +45,9 @@ const getProducts = async (req, res, next) => {
                         $regex: `${category}`,
                         // $regex: cat[1]
                     }},
+                    
             });
-            const categories = await Category.find();
-            const allBrands = []
-            for(let p in prod){
-                // const cat = prod[p].category.toLowerCase()
-                // prod[p].category = 'hair & styling'
-                // prod[p].save()
-                // console.log('saved')
-                allBrands.push(prod[p].brandName)
-                
-            }
-            const brands = [...new Set(allBrands)];
-
-
+            
             // for quering the next filter page, so as not to throw an error in product page
             // const query = {    
             //     retailPrice: {  $gte: Number(req.body.minAmount) || 0, $lte: Number(req.body.maxAmount) || 5000},
@@ -69,8 +67,6 @@ const getProducts = async (req, res, next) => {
         .exec((err, products) => {
             // console.log(products)
             res.status(200).json({
-                brands,
-                categories,
                 dataLength: prod.length/perPage + 1,
                 products,
                 user: '',
@@ -80,7 +76,6 @@ const getProducts = async (req, res, next) => {
 } catch (err) {
     res.status(500).json({
         products: [],
-        brands:[],
         user: '',
     })
    }

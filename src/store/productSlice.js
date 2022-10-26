@@ -4,7 +4,7 @@ import {SUCCESS_STATUS, NO_CONTENTS} from '../common/variables'
 
 const ProductData = {
     products: [],
-    brand: [],
+    brands: [],
     loadingProducts: true,
     singleProduct: [],
 }
@@ -16,14 +16,12 @@ const products = createSlice({
         // all all recipes from the database
         getAllProducts(state, action){
                 if( action.payload.status === SUCCESS_STATUS){
-                    const {brands, products, dataLength} = action.payload.data
-                    state.brand = brands;
+                    const {products, dataLength} = action.payload.data
                     state.loadingProduct = false;
                     state.products = products;
                     localStorage.setItem("ItemNumber", dataLength)
                 }
                 if(action.payload.status !== SUCCESS_STATUS){
-                    state.brand = [];
                     state.loadingProduct = true;
                     state.products = [];
                 }
@@ -32,6 +30,9 @@ const products = createSlice({
            const product = action.payload.data
            state.singleProduct = product
        },
+       getAllBrands(state, action){
+            state.brands = action.payload.brands
+       }
 
     }
 })
@@ -42,9 +43,11 @@ export default products.reducer;
 export const {
     getAllProducts, 
     getSingleProduct,
+    getAllBrands,
 } = products.actions
 
 
 //selectors
 export const productsSelector = (state) => state.Products.products;
 export const productsLoadingSelector = (state) => state.Products.loadingProduct;
+export const brandsSelector = (state) => state.Products.brands;
