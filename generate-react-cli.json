@@ -5,7 +5,7 @@
     "testLibrary": "Hair-Dressing",
     "component": {
       "default": {
-        "path": "src/components/NavBar",
+        "path": "src/components",
         "withStyle": true,
         "withTest": true,
         "withStory": false,
@@ -18,8 +18,8 @@
         "withStyle": true,
         "withTest": true
       },
-      "home": {
-        "path": "src/pages/Home",
+      "product": {
+        "path": "src/pages/Product",
         "withLazy": false,
         "withStory": false,
         "withStyle": true,

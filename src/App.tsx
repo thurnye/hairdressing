@@ -16,6 +16,7 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import { getCategories } from './api/request'; 
 import { getAllCategories} from './store/categorySlice';
+import { getAllBrands} from './store/productSlice';
 import './App.scss';
 
 
@@ -33,12 +34,14 @@ function App() {
     };
   }, []);
 
-  //GetCategories
+
   useEffect(() => { 
     const fetchData = async () => {
       const request = await getCategories()
-      const {status, data} = request
-        dispatch(getAllCategories({status,data}))
+      const {status} = request
+      const {categories, brands} = request && request.data
+        dispatch(getAllCategories({status,categories}))
+        dispatch(getAllBrands({status,brands}))
   }
   fetchData();
   },[])
@@ -50,6 +53,7 @@ function App() {
       <Routes>
       <Route path="/"  element={<Home/>} />
       <Route path={`/products/search/:searchText`}  element={<Product/>} />
+      <Route path={`/products/filter`}  element={<Product/>} />
       <Route path="/services"  element={<Service/>} />
       <Route path="/book-online"  element={<BookOnline/>} />
       <Route path={`/products/:categoryID`} element={<Product/>} />

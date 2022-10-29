@@ -16,7 +16,7 @@ const categories = createSlice({
        
         getAllCategories(state, action){
                 if( action.payload.status === SUCCESS_STATUS){
-                    const {categories } = action.payload.data
+                    const {categories } = action.payload
                     state.categories = categories
                 }
                 if(action.payload.status !== SUCCESS_STATUS){

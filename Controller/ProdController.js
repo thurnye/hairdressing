@@ -11,12 +11,21 @@ const { response } = require('express');
 const getCategories = async (req, res, next) => {
     try {
         const categories = await Category.find();
+        const prod = await Products.find();
+        const allBrands = []
+        for(let p in prod){
+            allBrands.push(prod[p].brandName)
+            
+        }
+        const brands = [...new Set(allBrands)].sort();
         res.status(200).json({
             categories,
+            brands,
         })
     } catch (error) {
         res.status(500).json({
             category:[],
+            brands:[],
             user: '',
         })
     }
@@ -25,67 +34,96 @@ const getCategories = async (req, res, next) => {
 // Get Products
 const getProducts = async (req, res, next) => {
     try{
-            const page = parseInt(req.params.page) || 1
-            const perPage = parseInt(req.params.itemsPerPage) || 24
-            const {category, search} = req.body
-            // const cat = category.split('&')
-            console.log(page, perPage, category, search)
-            const prod = await Products.find({
-                ...search && {displayName: { $regex: `${search}` }},
-                ...category && {category: {
-                        $regex: `${category}`,
-                        // $regex: cat[1]
-                    }},
-            });
-            const categories = await Category.find();
-            const allBrands = []
-            for(let p in prod){
-                // const cat = prod[p].category.toLowerCase()
-                // prod[p].category = 'hair & styling'
-                // prod[p].save()
-                // console.log('saved')
-                allBrands.push(prod[p].brandName)
-                
-            }
-            const brands = [...new Set(allBrands)];
+        const page = parseInt(req.params.page) || 1
+        const perPage = parseInt(req.params.itemsPerPage) || 24
+        const {category, search} = req.body
+        
+        console.log(page, perPage, category, search)
+
+        const prod = await Products.find({
+            ...search && {displayName: { $regex: `${search}` }},
+            ...category && {category: {
+                    $regex: `${category}`,
+                }},
+        });
+
+        const minMax = await Products.aggregate([
+            { "$group": {
+                "_id": null,
+                "MaximumValue": { "$max": "$currentSku.listPrice" },
+            }}
+            ]);
 
 
-            // for quering the next filter page, so as not to throw an error in product page
-            // const query = {    
-            //     retailPrice: {  $gte: Number(req.body.minAmount) || 0, $lte: Number(req.body.maxAmount) || 5000},
-            // } 
         // pagination
-         await Products
+        await Products
         .find({
            ...search && {displayName: { $regex: `${search}` }},
            ...category && {category: {
                 $regex: `${category}`,
-                // $regex: cat[1]
             }},
 
         })
         .skip((perPage * page) - perPage)
         .limit(perPage)
         .exec((err, products) => {
-            // console.log(products)
             res.status(200).json({
-                brands,
-                categories,
                 dataLength: prod.length/perPage + 1,
                 products,
                 user: '',
-
+                maximumPrice: minMax[0].MaximumValue,
             })
         })
-} catch (err) {
-    res.status(500).json({
-        products: [],
-        brands:[],
-        user: '',
-    })
+    } catch (err) {
+        res.status(500).json({
+            products: [],
+            user: '',
+        })
    }
 
 }
+
+
+// Filter Search
+const postFilter = async (req, res) => {
+    try {
+        const page = parseInt(req.params.page) || 1
+        const perPage = parseInt(req.params.itemsPerPage) || 24
+        const{
+            minPrice,
+            maxPrice,
+            brand,
+        } = req.body
+
+        // query for min-max prices
+        const  query = {    
+            "currentSku.listPrice": {  $gte: Number(minPrice) || 0, $lte: Number(maxPrice) || 5000},
+        } 
+         // check for brand
+        if (brand){
+            query.brandName = new RegExp(brand, 'i')
+        }
+        const prod = await Products.find(query);
+
+        // pagination
+        await Products
+        .find(query)
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .exec((err, products) => {
+            res.status(200).json({
+                dataLength: prod.length/perPage + 1,
+                products,
+                user: '',
+                presentFilter: req.body
+            })
+        })
+       
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 
 
 
@@ -263,82 +301,6 @@ const removeCartItem = async (req, res) => {
     // }
 }
 
-// Filter Search
-const postFilter = async (req, res) => {
-    // try {
-    //     const filterColor = req.body.color 
-    //     const filterBrand = req.body.brand 
-    //     const filterGender = req.body.gender 
-
-    //     // hold the query
-    //     const  query = {    
-    //         retailPrice: {  $gte: Number(req.body.minAmount) || 0, $lte: Number(req.body.maxAmount) || 5000},
-    //     } 
-
-    //     // check for the filter values and add them to the query
-    //     if (filterColor !== undefined && filterColor !== ''){
-    //         query.colorway = new RegExp(filterColor, 'i')
-    //     }
-
-    //     if (filterBrand !== undefined && filterBrand !== ''){
-    //         query.brand = new RegExp(filterBrand, 'i')
-    //     }
-
-    //     if (filterGender !== undefined && filterGender !== ''){
-    //         query.gender = filterGender
-    //     }
-    //     // get filter fields
-    //     const catalog = await Products.find();
-    //     const allBrands = []
-    //     const allGenders = []
-    //     const allColors = []
-
-    //     for(prod in catalog){
-    //         allBrands.push(catalog[prod].brand)
-    //         allGenders.push(catalog[prod].gender)
-    //         allColors.push(catalog[prod].colorway)
-    //     }
-
-    //     // get the unique values
-    //     const brands = [...new Set(allBrands)];
-    //     const genders = [...new Set(allGenders)];
-
-    //     // get the filterQuery to display
-    //     const filterQuery = {
-    //         brand: req.body.brand,
-    //         color: req.body.color,
-    //         gender: req.body.gender,
-    //         retailPrice: {  $gte: Number(req.body.minAmount) || 0, $lte: Number(req.body.maxAmount) || 5000} 
-    //     }
-
-    //     // pagination
-    //     const page = req.params.page || 1
-    //     const perPage = 20;
-    //     await Products.find(query)
-    //     .skip((perPage * page) - perPage)
-    //     .limit(perPage)
-    //     .exec((err, products) => {
-    //         Products.find(query).countDocuments().exec((err, count) => {
-    //             if (err) return next(err)
-    //             res.render('shop/catalog', {
-    //                 title: 'Simpleton',
-    //                 user: req.user,
-    //                 products: products,
-    //                 current: page,
-    //                 pages: Math.ceil(count / perPage),
-    //                 brands: brands,
-    //                 genders: genders,
-    //                 colors: colors,
-    //                 search: true,
-    //                 filter: filterQuery
-    //             })
-    //         })
-    //     })
-       
-    // } catch (err) {
-    //     console.log(err)
-    // }
-}
 
 
 
