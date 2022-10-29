@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux';
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from '@mui/material';
@@ -11,41 +12,47 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { brandsSelector } from '../../../store/productSlice';
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
 import styles from './Filter.module.scss';
 
 
-const useStyles = makeStyles((theme:any) => ({
-  menuPaper: {
-    height: 450
-  }
-}));
+interface State {
+  sort: string
+  minPrice: number;
+  maxPrice: number;
+  brand: string;
+  brandV: string | null;
+}
 
-interface FilterProps {}
 
-const Filter: FC<FilterProps> = () => {
-  const classes = useStyles();
-  const [sort, setSort] = React.useState('ascending');
+interface FilterProps {
+  getSort: Function
+}
+
+const Filter: FC<FilterProps> = (props:FilterProps) => {
+  const {getSort} = props
+  // const [sort, setSort] = React.useState('ascending');
   const brands = useSelector(brandsSelector);
-  const [brand, setBrand] = React.useState('all');
-  const [limit, setLimit] = useState(20);
-  const [data, setData] = useState(brands.slice(0, limit));
-  const [value, setValue] = React.useState<string | null>('');
+  // const [value, setValue] = React.useState<string | null>('');
+
+  const [values, setValues] = React.useState<State>({
+    sort: 'ascending',
+    minPrice: 0,
+    maxPrice: 1000,
+    brand: "",
+    brandV: brands[0],
+  });
 
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setSort(event.target.value as string);
+
+  const handleChange = (prop: keyof State) => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    console.log(event.target.value)
+    setValues({ ...values, [prop]: event.target.value });
   };
-
-
-  const handleBrandChange = (event: SelectChangeEvent) => {
-    setBrand(event.target.value as string);
-  };
-
-  console.log('VALUE', value)
-
-  useEffect(() => {
-    setData(brands.slice(0, limit));
-  }, [brands, limit]);
 
 
   return(
@@ -61,8 +68,12 @@ const Filter: FC<FilterProps> = () => {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={sort}
-                onChange={handleChange}
+                value={values.sort}
+                // onChange={handleChange}
+                onChange={(event: SelectChangeEvent) => {
+                  setValues({ ...values, sort: event.target.value });
+                  getSort(event.target.value)
+                }}
               >
                 <MenuItem value={'ascending'}>Alphabetically A - Z </MenuItem>
                 <MenuItem value={'descending'}>Alphabetically Z - A </MenuItem>
@@ -82,13 +93,17 @@ const Filter: FC<FilterProps> = () => {
           {/* Brands - AutoSearch */}
         <Box sx={{ mt: 1 }}>
           <FormControl fullWidth>
-            <Autocomplete
-              disablePortal
-              value={value}
+          <Autocomplete
+              value={values.brandV || null}
               onChange={(event: any, newValue: string | null) => {
-                setValue(newValue);
+                setValues({ ...values, brandV: newValue });
               }}
-              id="combo-box-demo"
+              inputValue={values.brand || ''}
+              onInputChange={(event, newInputValue) => {
+                setValues({ ...values, brand: newInputValue });
+              }}
+              disablePortal
+              id="combo-box-brands"
               options={brands}
               sx={{}}
               placeholder="All Brands"
@@ -97,6 +112,69 @@ const Filter: FC<FilterProps> = () => {
               )}
             />
           </FormControl>
+        </Box>
+
+        {/* Min and Max */}
+        <Box sx={{ width: "100%", mt: 1 }}>
+          <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          >
+            <Grid item xs={6}>
+              <FormControl fullWidth sx={{ mt: 1 }}>
+                <Typography variant="caption"><i>Min Price</i></Typography>
+                <OutlinedInput
+                  id="outlined-adornment-minPrice"
+                  value={values.minPrice}
+                  onChange={handleChange("minPrice")}
+                  startAdornment={
+                    <InputAdornment position="start">$</InputAdornment>
+                  }
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl fullWidth sx={{ mt: 1 }}>
+                <Typography variant="caption"><i>Max Price</i></Typography>
+                <OutlinedInput
+                  id="outlined-adornment-maxPrice"
+                  value={values.maxPrice}
+                  onChange={handleChange("maxPrice")}
+                  startAdornment={
+                    <InputAdornment position="start">$</InputAdornment>
+                  }
+                />
+              </FormControl>
+            </Grid>
+          </Grid>
+        </Box>
+
+        <Box sx={{ width: "100%", mt: 1 }}>
+          <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          >
+            <Grid item xs={7}>
+            <Button 
+            type="submit" 
+            variant="contained" 
+            className='buttonStyles' 
+            // fullWidth 
+            // onClick={() => handleSubmit()}
+            >
+              <Link  
+              to={{
+                pathname: "/products/filter",
+              }}
+              state= {{filters:values}}
+              
+              >Filter</Link>
+            </Button>
+            </Grid>
+            
+          </Grid>
         </Box>
             
         </Box>

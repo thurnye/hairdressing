@@ -69,3 +69,8 @@
   white-space: normal !important;
 }
 
+.buttonStyles, .buttonStyles:hover{
+  color: $buttonText-color;
+  background-color: $buttonBackground !important;
+  width: 180px;
+}

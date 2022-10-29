@@ -13,6 +13,17 @@ export const getProducts = async (page:number, itemPerPage:number, category:stri
         return err;
     }
 }
+//Get Products
+export const getFilteredProducts = async (page:number, itemPerPage:number, filter:object) => {
+    try{
+        const products:any = await services.filter(page, itemPerPage, filter)
+        
+        return products;
+
+    }catch(err){
+        return err;
+    }
+}
 //Get Categories
 export const getCategories = async () => {
     try{

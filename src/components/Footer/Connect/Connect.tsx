@@ -62,7 +62,7 @@ const Connect: FC<ConnectProps> = () => {
         </Box>
       </Box>
       <Box sx={{mt: 1, display: 'flex'}}>
-        <Button type="submit" variant="contained" className={styles.newsLetter}>Join</Button>
+        <Button type="submit" variant="contained" className={`buttonStyles`}>Join</Button>
       </Box>
     </form>
   </div>

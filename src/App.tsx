@@ -34,7 +34,7 @@ function App() {
     };
   }, []);
 
-  //GetCategories
+
   useEffect(() => { 
     const fetchData = async () => {
       const request = await getCategories()
@@ -53,6 +53,7 @@ function App() {
       <Routes>
       <Route path="/"  element={<Home/>} />
       <Route path={`/products/search/:searchText`}  element={<Product/>} />
+      <Route path={`/products/filter`}  element={<Product/>} />
       <Route path="/services"  element={<Service/>} />
       <Route path="/book-online"  element={<BookOnline/>} />
       <Route path={`/products/:categoryID`} element={<Product/>} />
