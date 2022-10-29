@@ -34,45 +34,39 @@ const getCategories = async (req, res, next) => {
 // Get Products
 const getProducts = async (req, res, next) => {
     try{
-            const page = parseInt(req.params.page) || 1
-            const perPage = parseInt(req.params.itemsPerPage) || 24
-            const {category, search} = req.body
-            // const cat = category.split('&')
-            console.log(page, perPage, category, search)
-            const prod = await Products.find({
-                ...search && {displayName: { $regex: `${search}` }},
-                ...category && {category: {
-                        $regex: `${category}`,
-                        // $regex: cat[1]
-                    }},
-            });
+        const page = parseInt(req.params.page) || 1
+        const perPage = parseInt(req.params.itemsPerPage) || 24
+        const {category, search} = req.body
+        
+        console.log(page, perPage, category, search)
 
-            const minMax = await Products.aggregate([
-                { "$group": {
-                   "_id": null,
-                   "MaximumValue": { "$max": "$currentSku.listPrice" },
-                }}
-             ]);
-             console.log('MinMax', minMax[0].MaximumValue)
-            
-            // for quering the next filter page, so as not to throw an error in product page
-            // const query = {    
-            //     retailPrice: {  $gte: Number(req.body.minAmount) || 0, $lte: Number(req.body.maxAmount) || 5000},
-            // } 
+        const prod = await Products.find({
+            ...search && {displayName: { $regex: `${search}` }},
+            ...category && {category: {
+                    $regex: `${category}`,
+                }},
+        });
+
+        const minMax = await Products.aggregate([
+            { "$group": {
+                "_id": null,
+                "MaximumValue": { "$max": "$currentSku.listPrice" },
+            }}
+            ]);
+
+
         // pagination
         await Products
         .find({
            ...search && {displayName: { $regex: `${search}` }},
            ...category && {category: {
                 $regex: `${category}`,
-                // $regex: cat[1]
             }},
 
         })
         .skip((perPage * page) - perPage)
         .limit(perPage)
         .exec((err, products) => {
-            // console.log(products)
             res.status(200).json({
                 dataLength: prod.length/perPage + 1,
                 products,
@@ -80,11 +74,11 @@ const getProducts = async (req, res, next) => {
                 maximumPrice: minMax[0].MaximumValue,
             })
         })
-} catch (err) {
-    res.status(500).json({
-        products: [],
-        user: '',
-    })
+    } catch (err) {
+        res.status(500).json({
+            products: [],
+            user: '',
+        })
    }
 
 }
@@ -101,8 +95,6 @@ const postFilter = async (req, res) => {
             brand,
         } = req.body
 
-        console.log('Query', req.body)
-
         // query for min-max prices
         const  query = {    
             "currentSku.listPrice": {  $gte: Number(minPrice) || 0, $lte: Number(maxPrice) || 5000},
@@ -111,11 +103,7 @@ const postFilter = async (req, res) => {
         if (brand){
             query.brandName = new RegExp(brand, 'i')
         }
-
         const prod = await Products.find(query);
-
-        console.log(prod.length)
-
 
         // pagination
         await Products
@@ -123,7 +111,6 @@ const postFilter = async (req, res) => {
         .skip((perPage * page) - perPage)
         .limit(perPage)
         .exec((err, products) => {
-            // console.log(products)
             res.status(200).json({
                 dataLength: prod.length/perPage + 1,
                 products,

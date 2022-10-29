@@ -60,7 +60,7 @@ const Product: FC<ProductProps> = () => {
 
       }
     }, [sort,products])
-    console.log("sorted", sortedProducts)
+    
   //setting the pagination
   useEffect(() => {
     setCurrentPage(1)

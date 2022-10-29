@@ -33,9 +33,7 @@ interface FilterProps {
 
 const Filter: FC<FilterProps> = (props:FilterProps) => {
   const {getSort} = props
-  // const [sort, setSort] = React.useState('ascending');
   const brands = useSelector(brandsSelector);
-  // const [value, setValue] = React.useState<string | null>('');
 
   const [values, setValues] = React.useState<State>({
     sort: 'ascending',
@@ -69,7 +67,6 @@ const Filter: FC<FilterProps> = (props:FilterProps) => {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={values.sort}
-                // onChange={handleChange}
                 onChange={(event: SelectChangeEvent) => {
                   setValues({ ...values, sort: event.target.value });
                   getSort(event.target.value)
@@ -158,20 +155,14 @@ const Filter: FC<FilterProps> = (props:FilterProps) => {
           >
             <Grid item xs={7}>
             <Button 
-            type="submit" 
+            component={Link} 
             variant="contained" 
             className='buttonStyles' 
-            // fullWidth 
-            // onClick={() => handleSubmit()}
-            >
-              <Link  
-              to={{
-                pathname: "/products/filter",
-              }}
-              state= {{filters:values}}
-              
-              >Filter</Link>
-            </Button>
+            to={{
+              pathname: "/products/filter",
+            }}
+            state= {{filters:values}}
+            >Filter</Button>
             </Grid>
             
           </Grid>
