@@ -18,6 +18,8 @@ import { getCategories } from './api/request';
 import { getAllCategories} from './store/categorySlice';
 import { getAllBrands} from './store/productSlice';
 import './App.scss';
+import Login from './components/Auth/Login/Login';
+import Signup from './components/Auth/Signup/Signup';
 
 
 library.add(fab, far, fas)
@@ -52,6 +54,8 @@ function App() {
       <Header/>
       <Routes>
       <Route path="/"  element={<Home/>} />
+      <Route path="/login"  element={<Login/>} />
+      <Route path="/signup"  element={<Signup/>} />
       <Route path={`/products/search/:searchText`}  element={<Product/>} />
       <Route path={`/products/filter`}  element={<Product/>} />
       <Route path="/services"  element={<Service/>} />
