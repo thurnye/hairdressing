@@ -5,14 +5,14 @@ const router = require('express').Router()
 
 // ========Users==============
  
-// //Sign UP
+// create an account
 router.post('/api/user', Controller.postCreateUser);
 
-// // Single
+// single
 router.get('/api/user/:type/:value', Controller.getAUser)
 
-// //Login
-// router.post(`/api/user/login`, Controller.getLogin);
+//login
+router.post(`/api/user/login`, Controller.getLogin);
 
 // // Update
 // router.post('/api/user/edit/:id', Controller.postEdit);

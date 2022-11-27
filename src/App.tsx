@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React,{useEffect, useState} from 'react';
 import {Routes, Route, redirect} from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
@@ -21,13 +21,14 @@ import { getAllCategories} from './store/categorySlice';
 import { getAllBrands} from './store/productSlice';
 import './App.scss';
 import Signup from './components/Auth/Signup/Signup';
-import { login } from './store/userSlice';
+import { login, userSelector } from './store/userSlice';
 
 
 library.add(fab, far, fas)
 
 function App() {
   const dispatch = useDispatch();
+  const user = useSelector(userSelector)
   let token = localStorage.getItem('token')
   useEffect(() => {
     const node = loadCSS(
@@ -50,12 +51,9 @@ function App() {
   },[])
 
   useEffect(() => {
-    console.log('Token', token)
     if (token) {
-      // YOU DO: check expiry!
-      const user = jwt_decode(token);  // decode jwt token
-      dispatch(login(user))  
-      redirect("/")   
+      const user:any = jwt_decode(token); 
+      dispatch(login(user))
     }
   }, [token, dispatch])
 
@@ -65,8 +63,12 @@ function App() {
       <Header/>
       <Routes>
       <Route path="/"  element={<Home/>} />
-      <Route path="/login"  element={<Signup login={true}/>} />
-      <Route path="/signup"  element={<Signup login={false}/>} />
+      {
+        !user && <>
+          <Route path="/login"  element={<Signup login={true}/>} />
+          <Route path="/signup"  element={<Signup login={false}/>} />
+        </>
+      }
       <Route path={`/products/search/:searchText`}  element={<Product/>} />
       <Route path={`/products/filter`}  element={<Product/>} />
       <Route path="/services"  element={<Service/>} />

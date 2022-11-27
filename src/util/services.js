@@ -9,7 +9,7 @@ class StuffDataService {
     return http.post("/api/user", data);
   }
   // login
-  postLogin(data) {
+  loginUser(data) {
     return http.post(`/api/user/login`, data);
   }
 

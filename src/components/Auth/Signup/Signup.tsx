@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
   headText: {
     fontSize: 40,
     letterSpacing: -1.4,
-    wordSpacing: -3.8,
+    wordSpacing: 2.2,
     fontWeight: 700,
     fontStyle: "normal",
     fontVariant: "small-caps",
@@ -140,31 +140,36 @@ const Signup: FC<SignupProps> = (props: SignupProps) => {
   });
 
   const [checked, setChecked] = useState<boolean>(true);
-
-  // const handleChange = (event:any) => {
-  //   setState({ ...state, [event.target.name]: event.target.checked });
-  // };
+  const [message, setMessage] = useState<string>('')
 
   const onSubmit = async (data:IFormInputs) => {
     try {
-      if(!checked)return;
-      console.log('data', data)
-      const result = await services.createUser(data)
-      console.log("newUser", result)
-      let token = result.data
-      localStorage.setItem('token', token); 
-    } catch (error) {
-      console.log(error)
+      if(!login){
+        if(!checked)return;
+        const resp = await services.findUser('email', data.email)
+      if(resp.status === 204){
+        const result = await services.createUser(data)
+        let token = result.data
+        localStorage.setItem('token', token);  
+        window.location.replace('/') 
+      }
+      if(resp.data){ 
+        setMessage('Email already exist, please sign in to continue.')
+      }
+      }else{
+        const resp = await services.loginUser(data)
+        let token = resp.data
+        localStorage.setItem('token', token);  
+        window.location.replace('/') 
+      }
+    } catch (error: any) {
+      const msg = error.response.data?.message
+      setMessage(msg)
     }
-      
-   
   };
 
   return(
   <div className={styles.Signup}>
-    
-
-    {/* <motion.div animate={{ x: 'calc(50% - 200px)' }} style={{border: '2px dotted black'}}> */}
       <Card className={classes.cardRoot}>
         <CardHeader
           style={{
@@ -173,8 +178,8 @@ const Signup: FC<SignupProps> = (props: SignupProps) => {
             alignItems: "center"
           }}
           title={
-            <Typography variant="h5" className={classes.headText}>
-              {login ? 'Account Login ' : 'Create Account' }
+            <Typography variant="h5" display="block" className={classes.headText}>
+              {login ? `Account Login` : 'Create An Account' }
             </Typography>
           }
           subheader={
@@ -203,6 +208,7 @@ const Signup: FC<SignupProps> = (props: SignupProps) => {
         />
 
         <CardContent>
+        <Typography variant="caption" display="block" gutterBottom className={styles.errorMessage} sx={{mb: 3}}>{message}</Typography>
           <form noValidate onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
               {
@@ -319,10 +325,10 @@ const Signup: FC<SignupProps> = (props: SignupProps) => {
                     aria-invalid={errors.password ? "true" : "false"}
                     {...register("password", {
                       required: "*password is required",
-                      minLength: {
+                      ...( !login && { minLength: {
                         value: 8,
                         message: "minimum length is 8"
-                      }
+                      }})
                     })}
                   />
                   {errors.password && <span role="alert" className={styles.errorMessage}>{errors.password.message}</span>}
@@ -372,9 +378,11 @@ const Signup: FC<SignupProps> = (props: SignupProps) => {
               }
             </Grid>
             <Button
+            
               variant="contained"
               color="primary"
               fullWidth
+              sx={{width: '100% !important'}}
               className={`${classes.submitButton} buttonStyles`}
               style={{ marginTop: 10 }}
               type="submit" 
@@ -386,8 +394,6 @@ const Signup: FC<SignupProps> = (props: SignupProps) => {
           </form>
         </CardContent>
       </Card>
-    {/* </motion.div> */}
-
   </div>
 );
 }

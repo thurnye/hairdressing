@@ -12,8 +12,6 @@ import { Box } from '@mui/material';
 interface GoogleProps {}
 
 const Google: FC<GoogleProps> = () => {
-  const dispatch = useDispatch()
-  const [ profile, setProfile ] = useState(null);
 
 const clientId = `${process.env.React_App_GOOGLE_CLIENT_ID}`
 // const clientId = ``
@@ -31,7 +29,6 @@ gapi.load('client:auth2', initClient);
 
 const onSuccess = async (res:any) => {
   try {
-    setProfile(res.profileObj);
     const {email, familyName, givenName, googleId, imageUrl} = res.profileObj
 
     const userData = {
@@ -64,48 +61,24 @@ const onFailure = (err:any) => {
   console.log('failed', err);
 };
 
-// const logOut = () => {
-//   const auth2 = gapi.auth2.getAuthInstance();
-//     auth2.signOut().then(() => {
-      
-//       setProfile(null);
-//       console.log('User signed out.');
-
-//     });
-// };
-
-
   return(
   <div className={styles.Google}>
-        <Box sx={{
-          width: 'fit-content',
-          margin: 'auto'
-        }}
-        onClick={ () => handleGoogleSignIn()}
-        >
-          <GoogleLogin
-            clientId={clientId}
-            buttonText="Sign in with Google"
-            onSuccess={onSuccess}
-            onFailure={onFailure}
-            cookiePolicy={'single_host_origin'}
-            isSignedIn={profile ? true : false}
-            
-          />
-        </Box>
-          {/* <div className="container">
-
-            {
-              profile ? <div id="" className="btn logout" onClick={() => logOut()}>
-              Logout
-            </div>
-            : 
-            <div id="customBtn" className="btn login">
-              Login
-            </div>
-            }
-      
-    </div> */}
+    <Box sx={{
+      width: 'fit-content',
+      margin: 'auto'
+    }}
+    onClick={ () => handleGoogleSignIn()}
+    >
+      <GoogleLogin
+        clientId={clientId}
+        buttonText="Sign in with Google"
+        onSuccess={onSuccess}
+        onFailure={onFailure}
+        cookiePolicy={'single_host_origin'}
+        isSignedIn={true}
+        
+      />
+    </Box>
   </div>
 );
 }

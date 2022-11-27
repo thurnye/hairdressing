@@ -30,16 +30,30 @@ const postCreateUser = async (req, res, next) => {
     }
 }
 
-//Find USER
-// const getHompage = async(req, res, next) => {
-//     await User.find({email: req.body.email}).then(users => {
-//         res.send({users});
-//     })
-//     .catch(err => res.status(400).json(err))
-// }
+// Login a User
+const getLogin = async (req, res) => {
+    try {
+        const user = await User.findOne({ email: req.body.email });
+        if (!user) throw  Object.assign(
+            new Error(),
+            { message: 'No account found!.' }
+         );
+        // check password. if it's bad throw an error.
+        if (!(await bcrypt.compare(req.body.password, user.password))) throw  Object.assign(
+            new Error(),
+            { message: 'Invalid email or password!.' }
+         );
+
+        // if we got to this line, password is ok. give user a new token.
+        const token = jwt.sign({ user }, process.env.SECRET,{ expiresIn: '24h' });
+        res.json(token)
+    } catch (err) {
+        res.status(422).json(err);
+    }
+}
 
 
-// //RETRIVE A USER BY ID
+// User validation check
 const getAUser= async (req, res, next) => {
     try {
         const query = {}
@@ -107,7 +121,7 @@ const getAUser= async (req, res, next) => {
 
 module.exports = {
     postCreateUser,
-    // getHompage,
+    getLogin,
     getAUser,
     // getEdit,
     // postEdit, 
