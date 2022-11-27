@@ -1,0 +1,7 @@
+@use '../../../public/styles/index.scss' as * ;
+.Banner {
+    color: $desktop-nav-color;
+    background-color: $banner-background-color;
+    font-family: $desktop-nav-font !important;
+    text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+}
