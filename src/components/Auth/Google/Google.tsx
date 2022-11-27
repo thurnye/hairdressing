@@ -13,11 +13,13 @@ interface GoogleProps {}
 
 const Google: FC<GoogleProps> = () => {
 
+  const [call, setCall] = useState<boolean>(false)
+
 const clientId = `${process.env.React_App_GOOGLE_CLIENT_ID}`
 // const clientId = ``
 
 const handleGoogleSignIn = () => {
-  console.log('clicked')
+  setCall(true)
   const initClient = () => {
     gapi.auth2.init({
         clientId: clientId,
@@ -27,29 +29,32 @@ const handleGoogleSignIn = () => {
 gapi.load('client:auth2', initClient);
 }
 
+
+
 const onSuccess = async (res:any) => {
   try {
-    const {email, familyName, givenName, googleId, imageUrl} = res.profileObj
-
-    const userData = {
-      firstName: givenName,
-      lastName: familyName,
-      email,
-      password: '',
-      imageUrl,
-      googleId,
+    if(call){
+      const {email, familyName, givenName, googleId, imageUrl} = res.profileObj
+      const userData = {
+        firstName: givenName,
+        lastName: familyName,
+        email,
+        password: '',
+        imageUrl,
+        googleId,
+      }
+      const resp = await services.findUser('email', email)
+      console.log(resp)
+      if(resp.status === 204){
+        const result = await services.createUser(userData)
+        let token = result.data
+        localStorage.setItem('token', token); 
+      }else{
+        let token = resp.data
+        localStorage.setItem('token', token); 
+      }
+      window.location.replace('/') 
     }
-    const resp = await services.findUser('email', email)
-    console.log(resp)
-    if(resp.status === 204){
-      const result = await services.createUser(userData)
-      let token = result.data
-      localStorage.setItem('token', token); 
-    }else{
-      let token = resp.data
-      localStorage.setItem('token', token); 
-    }
-    window.location.replace('/') 
   } catch (error:any) {
     console.log('error', error.response)
   }
