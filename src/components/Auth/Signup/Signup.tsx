@@ -3,15 +3,12 @@ import Google from '../Google/Google';
 import { ErrorMessage } from "@hookform/error-message";
 import { useForm } from "react-hook-form";
 import TextField from '@mui/material/TextField';
-import { Box, Button, Typography, Card , FormControl,
+import { Button, Typography, Card , FormControl,
   InputAdornment,
   Grid,
   CardHeader,
   CardContent,
   Divider,
-  
-  // Typography,
-  // Button,
   FormControlLabel,
   Checkbox} from '@mui/material';
 import { withStyles, makeStyles } from "@material-ui/core/styles";
@@ -19,13 +16,9 @@ import { Link } from "react-router-dom";
 import PersonIcon from "@material-ui/icons/Person";
 import EmailIcon from "@material-ui/icons/Email";
 import LockIcon from "@material-ui/icons/Lock";
-
-
 import styles from './Signup.module.scss';
 
 
-
-import { motion } from "framer-motion";
 import services from '../../../util/services';
 
 const ScmuiIconText = withStyles({
@@ -87,21 +80,8 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 1.5,
     color: "#132743"
   },
-  // glogging: {
-  //   display: "flex",
-  //   flexDirection: "column",
-  //   alignItems: "center",
-  //   // width: 400,
-  //   // marginLeft: 20,
-  //   marginTop: 0,
-  //   padding: 0
-  //   // paddingLeft: 16
-  // },
-
   submitButton: {
     height: 40,
-    // background:
-    //   "linear-gradient(54deg, rgba(88,203,255,1) 0%, rgba(55,182,255,1) 38%, rgba(80,161,251,1) 66%, rgba(81,198,249,1) 100%)"
   },
   submitButtonText: {
     fontSize: 14,

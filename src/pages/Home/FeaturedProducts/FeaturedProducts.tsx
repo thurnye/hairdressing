@@ -51,7 +51,7 @@ const FeaturedProducts: FC<FeaturedProductsProps> = () => {
     <Box sx={{ flexGrow: 1, mt: 2, display: { xs: 'none', sm: 'block' }}}>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 8, sm: 8, md: 12 }}>
         {data.map((el:any, index:number) => (
-          <Grid item xs={4} sm={4} md={3} key={index}>
+          <Grid item xs={4} sm={4} md={3} key={`featuredProducts-${index}`}>
             <img
             src={el.imgUrl}
             alt='hello'
@@ -71,8 +71,8 @@ const FeaturedProducts: FC<FeaturedProductsProps> = () => {
     <Box sx={{ flexGrow: 1, m: 2, display: { xs: 'block', sm: 'none' }}}>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 8, sm: 8, md: 12 }}>
         <OwlCarousel className="owl-theme" {...options}>
-          {data.map((el:any) => 
-            <div className="item" key={el}>
+          {data.map((el:any, i:number) => 
+            <div className="item" key={`carouselItem:${i}`}>
               {/* <img src={el} alt="img"/> */}
               <Grid item xs={8} sm={4} md={3}>
                 <ImageListItem>
@@ -94,8 +94,8 @@ const FeaturedProducts: FC<FeaturedProductsProps> = () => {
       </Grid>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 8, sm: 8, md: 12 }}>
         <OwlCarousel className="owl-theme" {...option2}>
-          {data.map((el:any) => 
-            <div className="item" key={el}>
+          {data.map((el:any, i:number) => 
+            <div className="item" key={`carousel-mobileItem-${i}`}>
               {/* <img src={el} alt="img"/> */}
               <Grid item xs={8} sm={4} md={3}>
                 <ImageListItem  sx={{mt: 4}}>
