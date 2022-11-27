@@ -1,5 +1,7 @@
 import React,{useEffect} from 'react';
-import {Routes, Route} from "react-router-dom";
+import {Routes, Route, redirect} from "react-router-dom";
+import jwt_decode from "jwt-decode";
+
 import {useDispatch, useSelector} from 'react-redux';
 import { loadCSS } from 'fg-loadcss';
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -18,14 +20,15 @@ import { getCategories } from './api/request';
 import { getAllCategories} from './store/categorySlice';
 import { getAllBrands} from './store/productSlice';
 import './App.scss';
-import Login from './components/Auth/Login/Login';
 import Signup from './components/Auth/Signup/Signup';
+import { login } from './store/userSlice';
 
 
 library.add(fab, far, fas)
 
 function App() {
   const dispatch = useDispatch();
+  let token = localStorage.getItem('token')
   useEffect(() => {
     const node = loadCSS(
       'https://use.fontawesome.com/releases/v6.0.0/css/all.css'
@@ -35,8 +38,6 @@ function App() {
       node.parentNode!.removeChild(node);
     };
   }, []);
-
-
   useEffect(() => { 
     const fetchData = async () => {
       const request = await getCategories()
@@ -48,14 +49,24 @@ function App() {
   fetchData();
   },[])
 
+  useEffect(() => {
+    console.log('Token', token)
+    if (token) {
+      // YOU DO: check expiry!
+      const user = jwt_decode(token);  // decode jwt token
+      dispatch(login(user))  
+      redirect("/")   
+    }
+  }, [token, dispatch])
+
 
   return (
     <div className="App">
       <Header/>
       <Routes>
       <Route path="/"  element={<Home/>} />
-      <Route path="/login"  element={<Login/>} />
-      <Route path="/signup"  element={<Signup/>} />
+      <Route path="/login"  element={<Signup login={true}/>} />
+      <Route path="/signup"  element={<Signup login={false}/>} />
       <Route path={`/products/search/:searchText`}  element={<Product/>} />
       <Route path={`/products/filter`}  element={<Product/>} />
       <Route path="/services"  element={<Service/>} />

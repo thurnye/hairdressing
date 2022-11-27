@@ -1,5 +1,5 @@
 //the shop has to have the product model 
-const User = require('../model/userModel')
+// const User = require('../model/userModel')
 const Products = require('../model/prodModel')
 const Category = require('../Model/categoriesModel')
 const Order= require('../model/orderModel');
@@ -26,7 +26,6 @@ const getCategories = async (req, res, next) => {
         res.status(500).json({
             category:[],
             brands:[],
-            user: '',
         })
     }
 }
@@ -70,7 +69,6 @@ const getProducts = async (req, res, next) => {
             res.status(200).json({
                 dataLength: prod.length/perPage + 1,
                 products,
-                user: '',
                 maximumPrice: minMax[0].MaximumValue,
             })
         })
@@ -114,7 +112,6 @@ const postFilter = async (req, res) => {
             res.status(200).json({
                 dataLength: prod.length/perPage + 1,
                 products,
-                user: '',
                 presentFilter: req.body
             })
         })

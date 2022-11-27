@@ -5,7 +5,7 @@ class StuffDataService {
   // ====== USER API ========
 
   // signup
-  create(data) {
+  createUser(data) {
     return http.post("/api/user", data);
   }
   // login
@@ -21,6 +21,10 @@ class StuffDataService {
   // Delete
   deleteAccount(id) {
     return http.post(`/api/user/delete/${id}`);
+  }
+  //findOne
+  findUser(type, value) { //the type is either email or id
+    return http.get(`/api/user/${type}/${value}`);
   }
 
 

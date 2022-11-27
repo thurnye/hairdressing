@@ -3,35 +3,30 @@ import Google from '../Google/Google';
 import { ErrorMessage } from "@hookform/error-message";
 import { useForm } from "react-hook-form";
 import TextField from '@mui/material/TextField';
-import { Box, Button, Typography } from '@mui/material';
-import { withStyles, makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
-import {
-  // TextField,
-  FormControl,
+import { Box, Button, Typography, Card , FormControl,
   InputAdornment,
   Grid,
-  Card,
   CardHeader,
   CardContent,
   Divider,
-  Avatar,
+  
   // Typography,
   // Button,
   FormControlLabel,
-  Checkbox
-} from "@material-ui/core";
+  Checkbox} from '@mui/material';
+import { withStyles, makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 import PersonIcon from "@material-ui/icons/Person";
 import EmailIcon from "@material-ui/icons/Email";
 import LockIcon from "@material-ui/icons/Lock";
-import FaceIcon from "@material-ui/icons/Face";
-import AlternateEmailIcon from "@material-ui/icons/AlternateEmail";
+
 
 import styles from './Signup.module.scss';
 
 
 
 import { motion } from "framer-motion";
+import services from '../../../util/services';
 
 const ScmuiIconText = withStyles({
   root: {
@@ -73,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundRepeat: "no-repeat",
     backgroundPosition: "bottom",
     // height: 763
+    margin: 'auto'
   },
 
   headText: {
@@ -121,7 +117,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-interface SignupProps {}
+interface SignupProps {
+  login?: boolean
+}
 
 interface IFormInputs {
   firstName: string;
@@ -130,8 +128,8 @@ interface IFormInputs {
   password: string;
 }
 
-const Signup: FC<SignupProps> = () => {
-  
+const Signup: FC<SignupProps> = (props: SignupProps) => {
+  const {login} = props
   const classes = useStyles();
   const {
     register, 
@@ -147,20 +145,26 @@ const Signup: FC<SignupProps> = () => {
   //   setState({ ...state, [event.target.name]: event.target.checked });
   // };
 
-  const onSubmit = (data:any) => {
-    if(!checked)return;
-        
-    console.log('data', data)
+  const onSubmit = async (data:IFormInputs) => {
+    try {
+      if(!checked)return;
+      console.log('data', data)
+      const result = await services.createUser(data)
+      console.log("newUser", result)
+      let token = result.data
+      localStorage.setItem('token', token); 
+    } catch (error) {
+      console.log(error)
+    }
       
    
   };
-
 
   return(
   <div className={styles.Signup}>
     
 
-    <motion.div animate={{ x: 'calc(50% - 200px)' }}>
+    {/* <motion.div animate={{ x: 'calc(50% - 200px)' }} style={{border: '2px dotted black'}}> */}
       <Card className={classes.cardRoot}>
         <CardHeader
           style={{
@@ -170,17 +174,24 @@ const Signup: FC<SignupProps> = () => {
           }}
           title={
             <Typography variant="h5" className={classes.headText}>
-              Create Account
+              {login ? 'Account Login ' : 'Create Account' }
             </Typography>
           }
           subheader={
             <>
               {" "}
               <Typography variant="h5" className={classes.neckText}>
-                Already have an account?{" "}
-                <Link to={"/login"} className={classes.LinkUnderlineRemove}>
-                  Login{" "}
+              {login ? <>
+                Don't have an account? {" "} 
+                <Link to={"/signup"} className={classes.LinkUnderlineRemove}>
+                  signup
                 </Link>
+              </>  : <>
+              Already have an account?
+                <Link to={"/login"} className={classes.LinkUnderlineRemove}>
+                {" "} login{" "}
+                </Link>
+              </>}
               </Typography>
             </>
           }
@@ -194,70 +205,69 @@ const Signup: FC<SignupProps> = () => {
         <CardContent>
           <form noValidate onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
-              
-              {/* firstName */}
-              <Grid item xs={6}>
-                <FormControl error fullWidth>
-                  <ScmuiIconText
-                    // className={classes.margin}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment
-                          position="start"
-                          // className={classes.icon}
-                        >
-                          <PersonIcon />
-                        </InputAdornment>
-                      )
-                    }}
-                    label="First Name"
-                    variant="outlined"
-                    {...register("firstName", {
-                      required: "*first name is required",
-                      pattern: {
-                        value: /^[A-Za-z]+$/i ,
-                        message: "*first name required"
-                      }
-                    })}
-                    type="text"/>
-                  
-                {errors.firstName && <span role="alert" className={styles.errorMessage}>{errors.firstName.message}</span>}
-                </FormControl>
-              </Grid>
+              {
+                !login && <>
+                  {/* firstName */}
+                  <Grid item xs={6}>
+                    <FormControl error fullWidth>
+                      <ScmuiIconText
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment
+                              position="start"
+                            >
+                              <PersonIcon />
+                            </InputAdornment>
+                          )
+                        }}
+                        label="First Name"
+                        variant="outlined"
+                        {...register("firstName", {
+                          required: "*first name is required",
+                          pattern: {
+                            value: /^[A-Za-z]+$/i ,
+                            message: "*first name required"
+                          }
+                        })}
+                        type="text"/>
+                      
+                    {errors.firstName && <span role="alert" className={styles.errorMessage}>{errors.firstName.message}</span>}
+                    </FormControl>
+                  </Grid>
 
-              {/* LastName */}
-              <Grid item xs={6}>
-                <FormControl error fullWidth>
-                  <ScmuiIconText
-                    // className={classes.margin}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PersonIcon />
-                        </InputAdornment>
-                      )
-                    }}
-                    label="Last Name"
-                    variant="outlined"
-                    {...register("lastName", {
-                      required: "*last name is required",
-                      pattern: {
-                        value: /^[A-Za-z]+$/i ,
-                        message: "*last name required"
-                      }
-                    })}
-                    type="text"/>
-                  
-                {errors.lastName && <span role="alert" className={styles.errorMessage}>{errors.lastName.message}</span>}
-                </FormControl>
-              </Grid>
+                  {/* LastName */}
+                  <Grid item xs={6}>
+                    <FormControl error fullWidth>
+                      <ScmuiIconText
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <PersonIcon />
+                            </InputAdornment>
+                          )
+                        }}
+                        label="Last Name"
+                        variant="outlined"
+                        {...register("lastName", {
+                          required: "*last name is required",
+                          pattern: {
+                            value: /^[A-Za-z]+$/i ,
+                            message: "*last name required"
+                          }
+                        })}
+                        type="text"/>
+                      
+                    {errors.lastName && <span role="alert" className={styles.errorMessage}>{errors.lastName.message}</span>}
+                    </FormControl>
+                  </Grid>
+                </>
+              }
               
 
               {/* Email */}
               <Grid item xs={12}>
                 <FormControl  fullWidth>
                   <ScmuiIconText
-                    // className={classes.margin}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -296,7 +306,6 @@ const Signup: FC<SignupProps> = () => {
               <Grid item xs={12}>
                 <FormControl error fullWidth>
                   <ScmuiIconText
-                    // className={classes.margin}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -328,26 +337,14 @@ const Signup: FC<SignupProps> = () => {
                     marginBottom: "25px"
                   }}
                 />{" "}
-                {/* <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  startIcon={<AlternateEmailIcon />}
-                  className={classes.submitButton}
-                >
-                  <Typography variant="h5" className={classes.submitButtonText}>
-                    Sign up with google
-                  </Typography>
-                </Button> */}
+                
                 <Google/>
               </CardContent>
 
               </Grid>
-              
-              
 
-              
-              <Grid item xs={12}>
+              {
+                !login && <Grid item xs={12}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -372,6 +369,7 @@ const Signup: FC<SignupProps> = () => {
                   }
                 />
               </Grid>
+              }
             </Grid>
             <Button
               variant="contained"
@@ -382,13 +380,13 @@ const Signup: FC<SignupProps> = () => {
               type="submit" 
             >
               <Typography variant="h5" className={classes.submitButtonText}>
-                Create Now
+                {login ? 'Login ' : 'Create Now' }
               </Typography>
             </Button>
           </form>
         </CardContent>
       </Card>
-    </motion.div>
+    {/* </motion.div> */}
 
   </div>
 );

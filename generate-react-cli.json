@@ -5,7 +5,7 @@
     "testLibrary": "Hair-Dressing",
     "component": {
       "default": {
-        "path": "src/components/Auth",
+        "path": "src/components/NavBar",
         "withStyle": true,
         "withTest": true,
         "withStory": false,
