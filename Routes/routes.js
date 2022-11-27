@@ -1,15 +1,18 @@
-// const Controller = require('../Controller/controller');
+const Controller = require('../Controller/controller');
 const ProdController = require('../Controller/ProdController');
 const Data = require('../config/data')
 const router = require('express').Router()
 
 // ========Users==============
  
-// //Sign UP
-// router.post('/api/user', Controller.postCreateUser);
+// create an account
+router.post('/api/user', Controller.postCreateUser);
 
-// //Login
-// router.post(`/api/user/login`, Controller.getLogin);
+// single
+router.get('/api/user/:type/:value', Controller.getAUser)
+
+//login
+router.post(`/api/user/login`, Controller.getLogin);
 
 // // Update
 // router.post('/api/user/edit/:id', Controller.postEdit);

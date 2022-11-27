@@ -24,6 +24,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Grid from '@mui/material/Grid';
 import Categories from './Categories/Categories';
 import { TextField } from '@mui/material';
+import AccountNav from './AccountNav/AccountNav';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -122,7 +123,7 @@ const NavBar: FC<NavBarProps> = () => {
    
 
   
-  const menuId = 'primary-search-account-menu';
+  // const menuId = 'primary-search-account-menu';
   return(
   <div className={styles.NavBar}>
     
@@ -233,19 +234,7 @@ const NavBar: FC<NavBarProps> = () => {
               </Link>
               </Badge>
             </IconButton>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              // onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <Link to="/my-account" className={styles.logo} >
-                <AccountCircle className={styles.icons}/>
-              </Link>
-            </IconButton>
+            <AccountNav/>
           </Box>
           </Box>
         </Toolbar>
